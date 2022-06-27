@@ -1,5 +1,5 @@
 # FXserver Install Scripts
-a collection of scripts to install the fax server + additional extensions in the form of install scripts
+a collection of scripts to install the fx server + additional extensions in the form of install scripts
 
 
 - install fivem fxserver on linux server.sh
