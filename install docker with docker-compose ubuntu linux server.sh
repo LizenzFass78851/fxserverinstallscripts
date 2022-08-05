@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# set this
-# see under
-
 
 # script
 apt-get remove -y docker docker-engine docker.io containerd runc
