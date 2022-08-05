@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set this
-fivemlink="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/5677-efd51a51337de2cf2398d491378fbbd7e932ad20/fx.tar.xz"
+fivemlink="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/5787-283df723cbd22ff4c8ac1949d6cb8dd397764ce2/fx.tar.xz"
 
 
 # script
