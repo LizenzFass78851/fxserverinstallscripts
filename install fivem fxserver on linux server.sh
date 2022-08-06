@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# set this
-fivemlink="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/5787-283df723cbd22ff4c8ac1949d6cb8dd397764ce2/fx.tar.xz"
+SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
+
+DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | grep -B 1 'LATEST RECOMMENDED' | tail -n -2 | head -n -1 | cut -d '"' -f 2 | cut -c 2-)"
 
 
 # script
@@ -13,9 +14,7 @@ cd server
 mkdir fivem
 cd fivem
 
-for fxlink in ${fivemlink}; do
-	wget $fxlink
-done
+wget ${DL_URL}
 
 tar -xvf fx.tar.xz
 rm fx.tar.xz
