@@ -75,7 +75,7 @@ echo Description=starte RedM Server >>/etc/systemd/system/redmserver.service
 echo  >>/etc/systemd/system/redmserver.service
 echo [Service] >>/etc/systemd/system/redmserver.service
 echo Type=simple >>/etc/systemd/system/redmserver.service
-echo ExecStart=/$(cd ~ && cd .. && ls | grep "$(whoami)")/server/redm/run.sh +set gamename rdr3 >>/etc/systemd/system/redmserver.service
+echo ExecStart=/$(cd ~ && cd .. && ls | grep "$(whoami)")/server/redm/run.sh +exec server.cfg +set gamename rdr3 >>/etc/systemd/system/redmserver.service
 echo User=$(whoami) >>/etc/systemd/system/redmserver.service
 echo Group=$(whoami) >>/etc/systemd/system/redmserver.service
 echo WorkingDirectory=/$(cd ~ && cd .. && ls | grep "$(whoami)")/server/redm >>/etc/systemd/system/redmserver.service
