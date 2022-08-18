@@ -16,7 +16,7 @@ borg init ~/server/backup/fivem --encryption none -v
 ````
 - Create backup
 ````
-borg create -v -s -p -C lz4 ~/server/backup/fivem::fivemserver-$(date '+%Y-%m-%d-%H:%M:%S') ~/server/ fivem/
+borg create -v -s -p -C lz4 ~/server/backup/fivem::fivemserver-$(date '+%Y-%m-%d-%H:%M:%S') ~/server/fivem/
 ````
 - Restore Backup
 ````
