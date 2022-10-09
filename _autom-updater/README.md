@@ -7,4 +7,4 @@
 
 - the docker updater script contains examples for updating selected images. therefore possibly ensure that the docker image updater script contains only the phases that update the images that also exist in the server
 
-- ein beispiel einer systemctl service vorlage gibt es [hier](../backup-solution)
+- an example of a systemctl service template can be found [here](../backup-solution)
