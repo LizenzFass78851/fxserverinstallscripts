@@ -9,14 +9,14 @@ do
    cd phpmyadmin
    docker-compose pull && docker-compose down && docker-compose up -d
    cd ..
-   # Update wg-easy
-   cd wg-easy
-   docker-compose pull && docker-compose down && docker-compose up -d
-   cd ..
-   # Build ubuntu-xrdp
-   cd ubuntu-xrdp
-   docker-compose down && docker rmi ubuntu-xrdp:22.04 && docker-compose up -d
-   cd ..
+   ## Update wg-easy
+   #cd wg-easy
+   #docker-compose pull && docker-compose down && docker-compose up -d
+   #cd ..
+   ## Build ubuntu-xrdp
+   #cd ubuntu-xrdp
+   #docker-compose down && docker rmi ubuntu-xrdp:22.04 && docker-compose up -d
+   #cd ..
    # Clean Images
    docker image prune --force
    # del Runningpoint
