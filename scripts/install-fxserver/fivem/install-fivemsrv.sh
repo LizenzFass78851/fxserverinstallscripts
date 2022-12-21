@@ -23,6 +23,10 @@ wget ${DL_URL}
 tar -xvf fx.tar.xz
 rm fx.tar.xz
 
+mkdir /txData
+ln -s -r /txData/ ./txData
+chmod -R 777 /txData/
+
 echo [Unit] >/etc/systemd/system/fivemserver.service
 echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemserver.service
 echo Description=starte FiveM Server >>/etc/systemd/system/fivemserver.service
@@ -41,3 +45,4 @@ echo WantedBy=multi-user.target >>/etc/systemd/system/fivemserver.service
 systemctl enable fivemserver.service
 systemctl start fivemserver.service
 echo "systemctl status fivemserver.service" can be used to query the status of the service
+echo don't forget to use the command "chmod -R 777 /txData/" and repeat this if there is data or several users who should help cannot write to it
