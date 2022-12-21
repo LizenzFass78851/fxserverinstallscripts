@@ -13,7 +13,7 @@ mkdir _autom-updater
 cd _autom-updater
 
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_autom-updater/fivem-updater.sh
+wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/_autom-updater/fivem-updater.sh
 chmod +x fivem-updater.sh
 
 
@@ -49,7 +49,7 @@ mkdir _autom-updater
 cd _autom-updater
 
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_autom-updater/docker-image-updater.sh
+wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/_autom-updater/docker-image-updater.sh
 chmod +x docker-image-updater.sh
 
 

@@ -16,7 +16,7 @@ cd docker
 mkdir phpmyadmin
 cd phpmyadmin
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/files/phpmyadmin/docker-compose.yml
+wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/files/phpmyadmin/docker-compose.yml
 
 
 ### set this "yourpassword" to your password

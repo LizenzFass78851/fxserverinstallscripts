@@ -12,13 +12,13 @@ cd backup
 mkdir fivem
 mkdir fivem-mount
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/backup-solution/README.md
+wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/README.md
 
 apt update && apt install borgbackup -y
 
 borg init ~/server/backup/fivem --encryption none -v
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/backup-solution/fivem-backup.sh
+wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/fivem-backup.sh
 chmod +x fivem-backup.sh
 
 
