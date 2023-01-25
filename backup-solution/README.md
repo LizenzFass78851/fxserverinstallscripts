@@ -1,5 +1,6 @@
 # borg instructions Linux:
 ## requires the installed package borgbackup from the selected linux distribution
+### all examples can also be applied to the borg repo "fivem-db".
 
 - Create folder as repo (destination storage)
 ````
