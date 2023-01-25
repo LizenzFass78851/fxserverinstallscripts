@@ -6,7 +6,7 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - 'mariadb-host_data:/bitnami/mariadb'
+      - './db:/bitnami/mariadb'
     restart: always
     environment:
       - MARIADB_ROOT_PASSWORD=bitnami
@@ -23,6 +23,6 @@ services:
     restart: always
     depends_on:
       - mariadb
-volumes:
-  mariadb-host_data:
-    driver: local
+#volumes:
+#  mariadb-host_data:
+#    driver: local
