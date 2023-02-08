@@ -24,3 +24,9 @@ sed -i 's/PASSWORD=bitnami/PASSWORD=yourpassword/g' ./docker-compose.yml
 
 
 docker-compose up -d
+
+echo wait 10 seconds
+sleep 10
+
+chmod -R 777 ./db
+docker-compose down && docker-compose up -d
