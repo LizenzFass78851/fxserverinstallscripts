@@ -5,6 +5,8 @@ do
    cd ~/server/docker
    # Mark Runningpoint
    touch _update-is-running.txt
+   # Update bitnami/minideb as base
+   #docker pull bitnami/minideb
    # Update phpmyadmin
    cd phpmyadmin
    docker-compose pull && docker-compose down && docker-compose up -d
