@@ -11,6 +11,10 @@ do
    cd phpmyadmin
    docker-compose pull && docker-compose down && docker-compose up -d
    cd ..
+   ## Update rustdesk
+   #cd rustdesk
+   #docker-compose pull && docker-compose down && docker-compose up -d
+   #cd ..
    ## Update wg-easy
    #cd wg-easy
    #docker-compose pull && docker-compose down && docker-compose up -d
