@@ -18,14 +18,8 @@ services:
   phpmyadmin:
     image: docker.io/bitnami/phpmyadmin:5
     ports:
-#      - '8080:8080'
-      - '8080:8443'
-      - '8443:8443'
+      - '8080:8080'
+#      - '8443:8443'
     restart: always
-    volumes:
-      - 'certs:/opt/bitnami/apache/conf/bitnami/certs'
     depends_on:
       - mariadb
-volumes:
-  certs:
-     driver: local
