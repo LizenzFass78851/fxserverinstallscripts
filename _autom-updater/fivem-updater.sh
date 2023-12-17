@@ -34,6 +34,6 @@ do
    echo start fivem service
    systemctl start fivemserver.service
 
-   echo Waiting for next time to create Backup
+   echo Waiting for next time to update fivem
    sleep 48h
 done
