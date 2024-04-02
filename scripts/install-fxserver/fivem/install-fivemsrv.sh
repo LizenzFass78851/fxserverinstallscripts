@@ -41,4 +41,4 @@ echo WantedBy=multi-user.target >>/etc/systemd/system/fivemserver.service
 systemctl enable fivemserver.service
 systemctl start fivemserver.service
 echo "systemctl status fivemserver.service" can be used to query the status of the service
-echo don't forget to use the command "chmod -R 777 /txData/" and repeat this if there is data or several users who should help cannot write to it
+echo dont forget to use the command "chmod -R 777 /txData/" and repeat this if there is data or several users who should help cannot write to it
