@@ -3,14 +3,9 @@
 
 # script
 cd ~
-cd server
 
-
-cd fivem
-
-
-mkdir _autom-updater
-cd _autom-updater
+mkdir -p server/fivem/_autom-updater
+cd server/fivem/_autom-updater
 
 
 wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/_autom-updater/fivem-updater.sh

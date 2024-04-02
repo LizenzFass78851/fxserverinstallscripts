@@ -11,12 +11,8 @@ DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | grep -B 1 'LATEST RECOMMENDED' | t
 
 # script
 cd ~
-mkdir server
-cd server
-
-
-mkdir fivem
-cd fivem
+mkdir -p server/fivem
+cd server/fivem
 
 wget ${DL_URL}
 

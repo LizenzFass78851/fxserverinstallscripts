@@ -2,15 +2,9 @@
 
 # script
 cd ~
-mkdir server
-cd server
 
-
-mkdir docker
-cd docker
-
-mkdir watchtower
-cd watchtower
+mkdir -p server/docker/watchtower
+cd server/docker/watchtower
 
 wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/files/watchtower/docker-compose.yml
 

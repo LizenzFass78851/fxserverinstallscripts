@@ -3,29 +3,27 @@
 
 # script
 cd ~
-cd server
 
+mkdir -p server/backup
+cd server/backup
 
-mkdir backup
-cd backup
-
-mkdir fivem
-mkdir fivem-mount
-
-mkdir fivem-db
-mkdir fivem-db-mount
+mkdir fivem && \
+  mkdir fivem-mount && \
+  mkdir fivem-db && \
+  mkdir fivem-db-mount
 
 wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/README.md
 
-apt update && apt install borgbackup -y
+apt update && \
+  apt install borgbackup -y
 
-borg init ~/server/backup/fivem --encryption none -v
-borg init ~/server/backup/fivem-db --encryption none -v
+borg init ~/server/backup/fivem --encryption none -v && \
+  borg init ~/server/backup/fivem-db --encryption none -v
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/fivem-backup.sh
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/fivem-db-backup.sh
-chmod +x fivem-backup.sh
-chmod +x fivem-db-backup.sh
+wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/fivem-backup.sh && \
+  wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/backup-solution/fivem-db-backup.sh && \
+  chmod +x fivem-backup.sh && \
+  chmod +x fivem-db-backup.sh
 
 
 echo [Unit] >/etc/systemd/system/fivembackup.service

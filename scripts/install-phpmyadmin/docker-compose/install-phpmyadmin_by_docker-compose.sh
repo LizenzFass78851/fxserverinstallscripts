@@ -6,15 +6,9 @@
 
 # script
 cd ~
-mkdir server
-cd server
 
-
-mkdir docker
-cd docker
-
-mkdir phpmyadmin
-cd phpmyadmin
+mkdir -p server/docker/phpmyadmin
+cd server/docker/phpmyadmin 
 
 wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/multiuser/files/phpmyadmin/docker-compose.yml
 

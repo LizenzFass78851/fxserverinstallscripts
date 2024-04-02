@@ -6,8 +6,7 @@ do
    # script
    echo change dir
    cd ~
-   cd server
-   cd fivem
+   cd server/fivem
    
    
    #DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | head -n 31 | tail -n 1 | cut -d '"' -f 4 | cut -c 2-)"
