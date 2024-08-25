@@ -5,7 +5,8 @@ a collection of scripts to install the fx server + additional extensions in the 
 
 ## install fxserver
 - a script to install fxserver with txadmin enabled (requires run as root)
-#### alternatively, fivem can also be installed as a [docker image](https://github.com/spritsail/fivem) (also compatible with the backup solution script if txdata is mounted in the "/" directory of the server)
+
+**alternatively, fivem can also be installed as a [docker image](https://github.com/spritsail/fivem) (also compatible with the backup solution script if txdata is mounted in the "/" directory of the server)**
 
 ## install phpmyadmin
 - a script to install a database + phpmyadmin
