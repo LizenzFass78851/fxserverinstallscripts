@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e # Exit the script on error
 
 if ! test -x /bin/curl; then
     echo "The package 'curl' is not installed."

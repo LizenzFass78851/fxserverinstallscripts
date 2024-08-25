@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e # Exit the script on error
+
 SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
 
 # for recommended versions
@@ -10,14 +12,13 @@ DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | grep -B 1 'LATEST RECOMMENDED' | t
 
 
 # script
-cd ~
-mkdir -p server/fivem
-cd server/fivem
+mkdir -p ~/server/fivem
+cd ~/server/fivem
 
 wget ${DL_URL}
 
-tar -xvf fx.tar.xz
-rm fx.tar.xz
+tar -xvf fx.tar.xz && \
+  rm fx.tar.xz
 
 mkdir /txData
 ln -s -r /txData/ ./txData
@@ -25,14 +26,14 @@ chmod -R 777 /txData/
 
 echo [Unit] >/etc/systemd/system/fivemserver.service
 echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemserver.service
-echo Description=starte FiveM Server >>/etc/systemd/system/fivemserver.service
+echo Description=FiveM Server >>/etc/systemd/system/fivemserver.service
 echo  >>/etc/systemd/system/fivemserver.service
 echo [Service] >>/etc/systemd/system/fivemserver.service
 echo Type=simple >>/etc/systemd/system/fivemserver.service
-echo ExecStart=/$(cd ~ && cd .. && ls | grep "$(whoami)")/server/fivem/run.sh +set serverProfile dev_server +set txAdminPort 40125 >>/etc/systemd/system/fivemserver.service
+echo ExecStart=$(echo ~)/server/fivem/run.sh +set serverProfile dev_server +set txAdminPort 40125 >>/etc/systemd/system/fivemserver.service
 echo User=$(whoami) >>/etc/systemd/system/fivemserver.service
 echo Group=$(whoami) >>/etc/systemd/system/fivemserver.service
-echo WorkingDirectory=/$(cd ~ && cd .. && ls | grep "$(whoami)")/server/fivem >>/etc/systemd/system/fivemserver.service
+echo WorkingDirectory=$(echo ~)/server/fivem >>/etc/systemd/system/fivemserver.service
 echo  >>/etc/systemd/system/fivemserver.service
 echo [Install] >>/etc/systemd/system/fivemserver.service
 echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemserver.service
