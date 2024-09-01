@@ -6,7 +6,6 @@ BACKUPREPO=$(echo ~)/server/backup/fivem
 BACKUPDIR=/txData
 
 BACKUPNAMEPREFIX=fivemserver
-BACKUPNAME=$BACKUPNAMEPREFIX-$(date '+%Y-%m-%d-%H:%M:%S')
 
 KEEPLIST="--keep-within=4d --keep-daily=7 --keep-weekly=4 --keep-monthly=12"
 SLEEPTIME=6h
@@ -18,7 +17,7 @@ borg break-lock $BACKUPREPO
 for (( ; ; ))
 do
    echo Create Backup
-   borg create -v -s -p -C lz4 $BACKUPREPO::$BACKUPNAME $BACKUPDIR
+   borg create -v -s -p -C lz4 $BACKUPREPO::$BACKUPNAMEPREFIX-$(date '+%Y-%m-%d-%H:%M:%S') $BACKUPDIR
 
    echo Remove Old Backups
    borg prune -v --list $KEEPLIST $BACKUPREPO
