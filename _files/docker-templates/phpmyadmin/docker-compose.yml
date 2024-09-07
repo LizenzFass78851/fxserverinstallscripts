@@ -1,5 +1,3 @@
-version: '2.1'
-
 services:
   phpmyadmin:
     image: docker.io/bitnami/phpmyadmin:5
@@ -11,7 +9,7 @@ services:
       - mariadb
 
   mariadb:
-    image: docker.io/bitnami/mariadb:10.6
+    image: docker.io/bitnami/mariadb:11.4
     ports:
       - '127.0.0.1:3306:3306'
     volumes:
