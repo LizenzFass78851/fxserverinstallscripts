@@ -14,7 +14,7 @@ apt update && \
 clear
 
 cd /tmp
-git clone $GITREPOLINK -b $GITFOLDERBRANCH $GITFOLDERNAME
+git clone $GITREPOLINK $GITFOLDERNAME --branch $GITFOLDERBRANCH --depth=1 --single-branch
 cd $GITFOLDERNAME
 
 SCRIPTS=$(find  $PWD/ | grep ".sh$" | grep "/scripts/" | grep -v "/100-" | sort)
