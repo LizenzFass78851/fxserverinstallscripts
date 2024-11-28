@@ -9,7 +9,7 @@ a collection of scripts to install the fx server + additional extensions in the 
 > [!NOTE]
 > - a aio installscript to install fivem (native) and mariadb, phpmyadmin (only as docker container) is available
 >
->   Does not work on vserver (without kvm support) but at best on root server or self-hosted as vm and not as lxc.
+>   -  Does not work on vserver (without kvm support) but at best on root server or self-hosted as vm and not as lxc.
 
 > [!IMPORTANT]
-> the scripts are optimized for debian and ubuntu systems (x64 architecture only)
+> - the scripts are optimized for debian and ubuntu systems (x64 architecture only)
