@@ -18,7 +18,7 @@ cd $GITFOLDERNAME
 
 SCRIPTS=$(find  $PWD/ | grep ".sh$" | grep "/scripts/" | grep -v "/100-" | grep -v "/docker-compose" | sort)
 
-LOGFILE='~/$(date '+%Y-%m-%d-%H:%M:%S')-aio_installscript-vm.log'
+LOGFILE=~/$(date '+%Y-%m-%d-%H:%M:%S')-aio_installscript-vm.log
 
 for SCRIPT in ${SCRIPTS}; do
     echo ============================================================= | tee -a $LOGFILE
