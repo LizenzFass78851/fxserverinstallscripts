@@ -16,7 +16,7 @@ wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/d
 
 
 echo "    environment:" >> docker-compose.yml
-echo "      - MARIADB_ROOT_PASSWORD=$RANDOMPASSWD" >> docker-compose.yml
+echo "      - MYSQL_ROOT_PASSWORD=$RANDOMPASSWD" >> docker-compose.yml
 
 
 docker-compose up -d

@@ -1,24 +1,22 @@
+version: "2.1"
 services:
   phpmyadmin:
-    image: docker.io/bitnami/phpmyadmin:5
+    image: linuxserver/phpmyadmin:latest
+    environment:
+      - PMA_ARBITRARY=0
+      - PMA_HOST=mariadb
     ports:
-      - '8080:8080'
-#      - '8443:8443'
+      - 8080:80
+#      - 8443:443
     restart: always
     depends_on:
       - mariadb
-
   mariadb:
-    image: docker.io/bitnami/mariadb:11.4
-    ports:
-      - '127.0.0.1:3306:3306'
+    image: linuxserver/mariadb:latest
     volumes:
-      - './db:/bitnami/mariadb'
+      - './db:/config/databases'
+    ports:
+      - 127.0.0.1:3306:3306
     restart: always
-    healthcheck:
-      test: ['CMD', '/opt/bitnami/scripts/mariadb/healthcheck.sh']
-      interval: 15s
-      timeout: 5s
-      retries: 6
 #    environment:
-#      - MARIADB_ROOT_PASSWORD=bitnami
+#      - MYSQL_ROOT_PASSWORD=linuxserver
