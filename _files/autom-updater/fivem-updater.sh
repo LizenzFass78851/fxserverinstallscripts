@@ -2,7 +2,7 @@
 
 set -e # Exit the script on error
 
-for (( ; ; ))
+while true
 do
    SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
    
