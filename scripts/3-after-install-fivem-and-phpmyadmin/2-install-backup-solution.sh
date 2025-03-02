@@ -14,7 +14,7 @@ mkdir fivem && \
 wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
 
 apt update && \
-  apt install borgbackup -y
+  apt install borgbackup python3-pyfuse3 -y
 
 borg init ~/server/backup/fivem --encryption none -v && \
   borg init ~/server/backup/fivem-db --encryption none -v
