@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e # Exit the script on error
-
 BACKUPREPO=$(echo ~)/server/backup/fivem
 BACKUPDIR=/txData
 
@@ -11,16 +9,19 @@ KEEPLIST="--keep-within=4d --keep-daily=7 --keep-weekly=4 --keep-monthly=12"
 SLEEPTIME=6h
 
 echo Breaking the Lock
-borg break-lock $BACKUPREPO
+borg break-lock $BACKUPREPO || true
 
-
-for (( ; ; ))
+while true
 do
    echo Create Backup
-   borg create -v -s -p -C lz4 $BACKUPREPO::$BACKUPNAMEPREFIX-$(date '+%Y-%m-%d-%H:%M:%S') $BACKUPDIR
+   if ! borg create -v -s -p -C lz4 $BACKUPREPO::$BACKUPNAMEPREFIX-$(date '+%Y-%m-%d-%H:%M:%S') $BACKUPDIR; then
+       echo "Backup creation failed, continuing..."
+   fi
 
    echo Remove Old Backups
-   borg prune -v --list $KEEPLIST $BACKUPREPO
+   if ! borg prune -v --list $KEEPLIST $BACKUPREPO; then
+       echo "Backup pruning failed, continuing..."
+   fi
 
    echo Waiting for next time to create Backup
    sleep $SLEEPTIME
