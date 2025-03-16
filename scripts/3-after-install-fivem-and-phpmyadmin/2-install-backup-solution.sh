@@ -2,64 +2,63 @@
 
 set -e # Exit the script on error
 
-# script
-mkdir -p ~/server/backup
+# Create backup directories
+mkdir -p ~/server/backup/{fivem,fivem-mount,fivem-db,fivem-db-mount}
 cd ~/server/backup
 
-mkdir fivem && \
-  mkdir fivem-mount && \
-  mkdir fivem-db && \
-  mkdir fivem-db-mount
+# Download README
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+# Install required packages
+apt update && apt install -y borgbackup python3-pyfuse3
 
-apt update && \
-  apt install borgbackup python3-pyfuse3 -y
+# Initialize borg repositories
+borg init --encryption none -v ~/server/backup/fivem
+borg init --encryption none -v ~/server/backup/fivem-db
 
-borg init ~/server/backup/fivem --encryption none -v && \
-  borg init ~/server/backup/fivem-db --encryption none -v
+# Download and set permissions for backup scripts
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/fivem-backup.sh
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/fivem-db-backup.sh
+chmod +x fivem-backup.sh fivem-db-backup.sh
 
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/fivem-backup.sh && \
-  wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/fivem-db-backup.sh && \
-  chmod +x fivem-backup.sh && \
-  chmod +x fivem-db-backup.sh
+# Create systemd service files for backups
+cat <<EOF >/etc/systemd/system/fivembackup.service
+[Unit]
+# Section described in the article systemd/Units
+Description=FiveM Backup
 
+[Service]
+Type=simple
+ExecStart=$(echo ~)/server/backup/fivem-backup.sh
+User=$(whoami)
+Group=$(whoami)
+WorkingDirectory=$(echo ~)/server/backup
 
-echo [Unit] >/etc/systemd/system/fivembackup.service
-echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivembackup.service
-echo Description=FiveM Backup >>/etc/systemd/system/fivembackup.service
-echo  >>/etc/systemd/system/fivembackup.service
-echo [Service] >>/etc/systemd/system/fivembackup.service
-echo Type=simple >>/etc/systemd/system/fivembackup.service
-echo ExecStart=$(echo ~)/server/backup/fivem-backup.sh >>/etc/systemd/system/fivembackup.service
-echo User=$(whoami) >>/etc/systemd/system/fivembackup.service
-echo Group=$(whoami) >>/etc/systemd/system/fivembackup.service
-echo WorkingDirectory=$(echo ~)/server/backup >>/etc/systemd/system/fivembackup.service
-echo  >>/etc/systemd/system/fivembackup.service
-echo [Install] >>/etc/systemd/system/fivembackup.service
-echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivembackup.service
-echo WantedBy=multi-user.target >>/etc/systemd/system/fivembackup.service
+[Install]
+# Section described in the article systemd/Units
+WantedBy=multi-user.target
+EOF
 
-echo [Unit] >/etc/systemd/system/fivemdbbackup.service
-echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemdbbackup.service
-echo Description=FiveM DB Backup >>/etc/systemd/system/fivemdbbackup.service
-echo  >>/etc/systemd/system/fivemdbbackup.service
-echo [Service] >>/etc/systemd/system/fivemdbbackup.service
-echo Type=simple >>/etc/systemd/system/fivemdbbackup.service
-echo ExecStart=$(echo ~)/server/backup/fivem-db-backup.sh >>/etc/systemd/system/fivemdbbackup.service
-echo User=$(whoami) >>/etc/systemd/system/fivemdbbackup.service
-echo Group=$(whoami) >>/etc/systemd/system/fivemdbbackup.service
-echo WorkingDirectory=$(echo ~)/server/backup >>/etc/systemd/system/fivemdbbackup.service
-echo  >>/etc/systemd/system/fivemdbbackup.service
-echo [Install] >>/etc/systemd/system/fivemdbbackup.service
-echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemdbbackup.service
-echo WantedBy=multi-user.target >>/etc/systemd/system/fivemdbbackup.service
+cat <<EOF >/etc/systemd/system/fivemdbbackup.service
+[Unit]
+# Section described in the article systemd/Units
+Description=FiveM DB Backup
 
-systemctl enable fivembackup.service
-systemctl start fivembackup.service
+[Service]
+Type=simple
+ExecStart=$(echo ~)/server/backup/fivem-db-backup.sh
+User=$(whoami)
+Group=$(whoami)
+WorkingDirectory=$(echo ~)/server/backup
 
-systemctl enable fivemdbbackup.service
-systemctl start fivemdbbackup.service
+[Install]
+# Section described in the article systemd/Units
+WantedBy=multi-user.target
+EOF
+
+# Enable and start the services
+systemctl enable --now fivembackup.service
+systemctl enable --now fivemdbbackup.service
 
 echo "systemctl status fivembackup.service" can be used to query the status of the service
 echo "systemctl status fivemdbbackup.service" can be used to query the status of the service

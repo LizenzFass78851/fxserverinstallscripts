@@ -2,32 +2,35 @@
 
 set -e # Exit the script on error
 
-# script
+# Create updater directory
 mkdir -p ~/server/fivem/_autom-updater
 cd ~/server/fivem/_autom-updater
 
-
-wget https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/autom-updater/fivem-updater.sh
+# Download and set permissions for updater script
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/autom-updater/fivem-updater.sh
 chmod +x fivem-updater.sh
 
+# Create systemd service file for updater
+cat <<EOF >/etc/systemd/system/fivemupdater.service
+[Unit]
+# Section described in the article systemd/Units
+Description=FiveM Updater
 
-echo [Unit] >/etc/systemd/system/fivemupdater.service
-echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemupdater.service
-echo Description=FiveM Updater >>/etc/systemd/system/fivemupdater.service
-echo  >>/etc/systemd/system/fivemupdater.service
-echo [Service] >>/etc/systemd/system/fivemupdater.service
-echo Type=simple >>/etc/systemd/system/fivemupdater.service
-echo ExecStart=$(echo ~)/server/fivem/_autom-updater/fivem-updater.sh >>/etc/systemd/system/fivemupdater.service
-echo User=$(whoami) >>/etc/systemd/system/fivemupdater.service
-echo Group=$(whoami) >>/etc/systemd/system/fivemupdater.service
-echo WorkingDirectory=$(echo ~)/server/fivem/_autom-updater >>/etc/systemd/system/fivemupdater.service
-echo  >>/etc/systemd/system/fivemupdater.service
-echo [Install] >>/etc/systemd/system/fivemupdater.service
-echo # Abschnitt wird im Artikel systemd/Units beschrieben >>/etc/systemd/system/fivemupdater.service
-echo WantedBy=multi-user.target >>/etc/systemd/system/fivemupdater.service
+[Service]
+Type=simple
+ExecStart=$(echo ~)/server/fivem/_autom-updater/fivem-updater.sh
+User=$(whoami)
+Group=$(whoami)
+WorkingDirectory=$(echo ~)/server/fivem/_autom-updater
 
-systemctl enable fivemupdater.service
-systemctl start fivemupdater.service
+[Install]
+# Section described in the article systemd/Units
+WantedBy=multi-user.target
+EOF
+
+# Enable and start the service
+systemctl enable --now fivemupdater.service
+
 echo "systemctl status fivemupdater.service" can be used to query the status of the service
 
 
