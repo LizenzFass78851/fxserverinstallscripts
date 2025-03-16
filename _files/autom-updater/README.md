@@ -1,8 +1,7 @@
-# automatic updater 
-## for fivem
+# Automatic Updater for FiveM
 
-- these scripts can be started with systemctl and thus automatically update fivem
+These scripts can be started with systemctl and thus automatically update FiveM.
 
-- enter the correct root directory of the fivem (fxserver) in the scripts so that it works.
+Enter the correct root directory of the FiveM (FXserver) in the scripts so that it works.
 
-- an example of a systemctl service template can be found [here](../backup-solution)
+An example of a systemctl service template can be found [here](../backup-solution).

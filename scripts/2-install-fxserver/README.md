@@ -1,2 +1,2 @@
-## fivem
-- a script to install fivem with txadmin enabled (requires run as root)
+## FiveM
+A script to install FiveM with txAdmin enabled (requires root access).

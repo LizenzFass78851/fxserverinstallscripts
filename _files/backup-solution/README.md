@@ -1,65 +1,77 @@
-# borg instructions Linux:
-## requires the installed package borgbackup from the selected linux distribution
-### all examples can also be applied to the borg repo "fivem-db".
+# Borg Instructions for Linux
 
-- Create folder as repo (destination storage)
-````bash
+## Requirements
+- Install the `borgbackup` package from your selected Linux distribution.
+
+## Examples
+All examples can also be applied to the borg repo "fivem-db".
+
+### Create a Folder as Repo (Destination Storage)
+```bash
 mkdir -p ~/server/backup/fivem
 cd ~/server/backup/fivem
-````
-- Create repo
-````bash
+```
+
+### Create Repo
+```bash
 borg init ~/server/backup/fivem --encryption none -v
-````
-- Create backup
-````bash
+```
+
+### Create Backup
+```bash
 borg create -v -s -p -C lz4 ~/server/backup/fivem::fivemserver-$(date '+%Y-%m-%d-%H:%M:%S') /txData
-````
-- Restore Backup
-````bash
-borg extract -v ~/server/backup/fivem::fivemserver-[SELECTED DATE AND TINE FROM BACKUP LIST without brackets] /txData
-````
-- Browse backup
-````bash
+```
+
+### Restore Backup
+```bash
+borg extract -v ~/server/backup/fivem::fivemserver-[SELECTED DATE AND TIME FROM BACKUP LIST without brackets] /txData
+```
+
+### Browse Backup
+```bash
 mkdir ~/server/backup/fivem-mount
-borg mount -v -f ~/server/backup/fivem::fivemserver-[SELECTED DATE AND TINE FROM BACKUP LIST without brackets] ~/server/backup/fivem-mount
-fusermount -u ~/server/backup/fivem-mount #run if -f was not used during mount
-````
-- Delete backups according to specifications
-````bash
+borg mount -v -f ~/server/backup/fivem::fivemserver-[SELECTED DATE AND TIME FROM BACKUP LIST without brackets] ~/server/backup/fivem-mount
+fusermount -u ~/server/backup/fivem-mount # Run if -f was not used during mount
+```
+
+### Delete Backups According to Specifications
+```bash
 borg prune -v --list --keep-within=4d --keep-daily=7 --keep-weekly=4 --keep-monthly=12 ~/server/backup/fivem
-````
-- List backups
-````bash
+```
+
+### List Backups
+```bash
 borg list -v ~/server/backup/fivem
-````
-- Systemctl template
-````bash
+```
+
+### Systemctl Template
+```bash
 nano /etc/systemd/system/fivembackup.service
-````
-````
-[unit]
-# Section is described in the systemd/Units article
+```
+
+```ini
+[Unit]
 Description=FiveM Backup
 
 [Service]
-type=simple
+Type=simple
 ExecStart=/root/server/backup/fivem-backup.sh
 User=root
 Group=root
 WorkingDirectory=/root/server/backup
 
 [Install]
-# Section is described in the systemd/Units article
 WantedBy=multi-user.target
-````
-````bash
+```
+
+```bash
 systemctl enable fivembackup.service
 systemctl start fivembackup.service
 systemctl status fivembackup.service
-````
-- example for fivem-backup.sh
-[fivem-backup.sh])(./fivem-backup.sh)
-````bash
+```
+
+### Example for fivem-backup.sh
+[fivem-backup.sh](./fivem-backup.sh)
+```bash
 chmod +x ~/server/backup/fivem-backup.sh
-````
+```

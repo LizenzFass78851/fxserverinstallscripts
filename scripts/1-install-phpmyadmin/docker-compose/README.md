@@ -1,10 +1,8 @@
-## install-docker_with_docker-compose_ubuntu-server
-- a script to install docker + docker-compose
+## Install Docker with Docker Compose on Ubuntu Server
+A script to install Docker and Docker Compose.
 
-## install-phpmyadmin_by_docker-compose
-- a script to install a database + phpmyadmin
-- (requires an already installed docker with docker-compose)
+## Install phpMyAdmin by Docker Compose
+A script to install a database and phpMyAdmin (requires an already installed Docker with Docker Compose).
 
-## install-watchtower_by_docker-compose
-- a script to install watchtower as docker image to update installed docker contaioner automatically
-- (requires an already installed docker with docker-compose)
+## Install Watchtower by Docker Compose
+A script to install Watchtower as a Docker image to update installed Docker containers automatically (requires an already installed Docker with Docker Compose).

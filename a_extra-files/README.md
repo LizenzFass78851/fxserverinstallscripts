@@ -1,3 +1,3 @@
 ## Extra Files
 
-- extra files that are related but not required. experimental files or similar.
+Extra files that are related but not required. Experimental files or similar.

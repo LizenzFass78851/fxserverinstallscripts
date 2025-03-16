@@ -1,10 +1,9 @@
-## docker compose
-recommended, but cannot run on hosted vserver
+## Docker Compose
+Recommended, but cannot run on hosted vServer.
 
-- a script to install a database + phpmyadmin (requires an already installed docker with docker-compose)
+A script to install a database and phpMyAdmin (requires an already installed Docker with Docker Compose).
 
+## Without Docker Compose
+Alternative, but more complicated.
 
-## without docker compose
-alternative, but more complicated
-
-- a script to install a database + phpmyadmin (without docker compose)
+A script to install a database and phpMyAdmin (without Docker Compose).
