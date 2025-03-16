@@ -1,9 +1,5 @@
 #!/bin/bash
 
-set -e  # Exit immediately if a command exits with a non-zero status
-set -u  # Treat unset variables as an error and exit immediately
-set -o pipefail  # Prevents errors in a pipeline from being masked
-
 # Remove old versions of Docker
 apt-get remove -y docker docker-engine docker.io containerd runc
 
