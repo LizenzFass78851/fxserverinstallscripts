@@ -1,34 +1,39 @@
 #!/bin/bash
 
+set -e  # Exit immediately if a command exits with a non-zero status
+set -u  # Treat unset variables as an error and exit immediately
+set -o pipefail  # Prevents errors in a pipeline from being masked
 
-# script
-apt remove -y docker docker-engine docker.io containerd runc
+# Remove old versions of Docker
+apt-get remove -y docker docker-engine docker.io containerd runc
 
-apt update
+# Update the package index
+apt-get update
 
-apt install -y \
+# Install required packages
+apt-get install -y \
     ca-certificates \
     curl \
     gnupg
 
+# Set up the Docker repository
 install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  "$(. /etc/os-release && echo "$UBUNTU_CODENAME")" stable" | \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo $UBUNTU_CODENAME) stable" | \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-apt update
+# Update the package index again
+apt-get update
 
-apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Install Docker packages
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# curl -SL $(curl -L -s https://api.github.com/repos/docker/compose/releases/latest | grep -o -E "https://(.*)docker-compose-linux-$(uname -m)") -o /usr/local/bin/docker-compose
-# ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-# chmod +x /usr/local/bin/docker-compose
-
-echo make a link to "docker-compose" from "docker compose"
-echo -e '#!/bin/sh\nexec docker compose "$@"' | tee /usr/local/bin/docker-compose && \
-  ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
-  chmod +x /usr/local/bin/docker-compose
+# Create a symbolic link for docker-compose
+echo "Creating a symbolic link for 'docker-compose' to 'docker compose'"
+echo -e '#!/bin/sh\nexec docker compose "$@"' | tee /usr/local/bin/docker-compose
+ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
