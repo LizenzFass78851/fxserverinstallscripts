@@ -17,6 +17,11 @@ do
    # for tagged versions
    #DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/9956-41b2e627e3b80ddbba4d63cb74968ac3d5926eb6/fx.tar.xz
 
+   if [ -f ./fx.tar.xz ]; then
+        echo remove leftover files
+        rm ./fx.tar.xz*
+   fi
+
    echo downloading ${DL_URL}
    wget ${DL_URL}
    	if [ ! -f ./fx.tar.xz ]; then
