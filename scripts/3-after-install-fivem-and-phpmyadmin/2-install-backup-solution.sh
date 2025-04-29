@@ -8,10 +8,14 @@ mkdir -p ~/server/backup/{fivem,fivem-mount}
 cd ~/server/backup
 
 # Download README
-if [ ! -f README.md ] && wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+if [ ! -f README.md ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+fi
 
 # Install required packages
-if [ ! -e /bin/borg ] && apt update && apt install -y borgbackup python3-pyfuse3
+if [ ! -e /bin/borg ]; then
+    apt update && apt install -y borgbackup python3-pyfuse3
+fi
 
 # Initialize borg repositories
 borg init --encryption none -v ~/server/backup/fivem
@@ -50,10 +54,14 @@ mkdir -p ~/server/backup/{fivem-db,fivem-db-mount}
 cd ~/server/backup
 
 # Download README
-if [ ! -f README.md ] && wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+if [ ! -f README.md ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+fi
 
 # Install required packages
-if [ ! -e /bin/borg ] && apt update && apt install -y borgbackup python3-pyfuse3
+if [ ! -e /bin/borg ]; then
+    apt update && apt install -y borgbackup python3-pyfuse3
+fi
 
 # Initialize borg repositories
 borg init --encryption none -v ~/server/backup/fivem-db
@@ -92,10 +100,14 @@ mkdir -p ~/server/backup/{redm,redm-mount}
 cd ~/server/backup
 
 # Download README
-if [ ! -f README.md ] && wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+if [ ! -f README.md ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+fi
 
 # Install required packages
-if [ ! -e /bin/borg ] && apt update && apt install -y borgbackup python3-pyfuse3
+if [ ! -e /bin/borg ]; then
+    apt update && apt install -y borgbackup python3-pyfuse3
+fi
 
 # Initialize borg repositories
 borg init --encryption none -v ~/server/backup/redm
@@ -133,11 +145,13 @@ if [ -d ~/server/fivem ]; then
 else
     echo "FiveM server directory not found. Skipping FiveM backup-solution installation."
 fi
+
 if [ -d ~/server/docker/phpmyadmin ]; then
     install_fivem-db_backup_solution
 else
     echo "Docker based phpmyadmin directory not found. Skipping FiveM DB backup-solution installation."
 fi
+
 if [ -d ~/server/redm ]; then
     install_redm_backup_solution
 else
