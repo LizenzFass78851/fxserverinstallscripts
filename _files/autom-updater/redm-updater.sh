@@ -2,7 +2,7 @@
 
 set -e # Exit the script on error
 
-SRV_ADR="https://runtime.redm.net/artifacts/redm/build_proot_linux/master/"
+SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
 SERVER_DIR=~/server/redm
 UPDATE_INTERVAL=48h
 DOWNLOAD_FILE=fx.tar.xz

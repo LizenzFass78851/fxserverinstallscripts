@@ -80,4 +80,3 @@ else
 fi
 
 echo "Automated updater installation completed."
-}
