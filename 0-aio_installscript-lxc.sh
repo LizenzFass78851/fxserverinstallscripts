@@ -7,6 +7,8 @@ GITFOLDERNAME=fxserverinstallscripts-$RANDOMFOLDER
 GITFOLDERBRANCH=main
 GITREPOLINK=https://github.com/LizenzFass78851/fxserverinstallscripts
 BACKUPSOLUTION=1 # 0 = no backup, 1 = backup
+FIVEM=1 # 0 = no fivem, 1 = fivem
+REDM=1 # 0 = no redm, 1 = redm
 
 apt update && \
   apt install -yy git curl wget
