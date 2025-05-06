@@ -8,7 +8,7 @@ SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
 #DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | grep -B 1 'LATEST RECOMMENDED' | tail -n -2 | head -n -1 | cut -d '"' -f 2 | cut -c 2-)"
 
 # for newer versions (experimental code to download the newer versions)
-DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | head -n 31 | tail -n 1 | cut -d '"' -f 4 | cut -c 2-)"
+DL_URL="${SRV_ADR}$(wget -qO- "$SRV_ADR" | grep -oE 'href="\./[0-9]+-[^/]+/fx\.tar\.xz"' | sed -E 's#href="\./([^"]+)".*#\1#' | sort -t- -k1,1n | tail -n1)"
 
 # script
 INSTALL_DIR=~/server/redm
