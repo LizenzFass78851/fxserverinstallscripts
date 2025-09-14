@@ -8,4 +8,4 @@ cd ~/server/docker/watchtower
 
 wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/docker-templates/watchtower/docker-compose.yml
 
-docker-compose up -d
+docker compose up -d

@@ -12,9 +12,4 @@ fi
 echo "start Docker install Script from docker.com"
 curl -sSL https://get.docker.com | bash
 
-echo "make a link to 'docker-compose' from 'docker compose'"
-echo -e '#!/bin/sh\nexec docker compose "$@"' | tee /usr/local/bin/docker-compose > /dev/null && \
-  ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose && \
-  chmod +x /usr/local/bin/docker-compose
-
 echo "done"

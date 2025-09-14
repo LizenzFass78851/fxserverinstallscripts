@@ -28,8 +28,3 @@ apt-get update
 # Install Docker packages
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Create a symbolic link for docker-compose
-echo "Creating a symbolic link for 'docker-compose' to 'docker compose'"
-echo -e '#!/bin/sh\nexec docker compose "$@"' | tee /usr/local/bin/docker-compose
-ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose

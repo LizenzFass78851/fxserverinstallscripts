@@ -17,13 +17,13 @@ wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_file
 echo "    environment:" >> docker-compose.yml
 echo "      - MYSQL_ROOT_PASSWORD=$RANDOMPASSWD" >> docker-compose.yml
 
-docker-compose up -d
+docker compose up -d
 
 echo "wait 10 seconds"
 sleep 10
 
 chmod -R 777 ./db
-docker-compose down && docker-compose up -d
+docker compose down && docker compose up -d
 
 echo "/////////////////////////////////////////////////////////////"
 echo "PHPMYADMIN and SQL Root Password:"

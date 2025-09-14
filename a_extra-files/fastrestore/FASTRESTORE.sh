@@ -12,11 +12,11 @@ echo "The example may differ if you want to mount redm or fivem-db."
 restore-db() {
   echo "Restoring fivem-db"
   cd ~/server/docker/phpmyadmin
-  docker-compose down
+  docker compose down
   rm -rf db
   cp -ra /root/server/backup/fivem-db-mount/root/server/docker/phpmyadmin/db/ .
   chmod -R 777 db
-  docker-compose up -d
+  docker compose up -d
   fusermount -u ~/server/backup/fivem-db-mount  # run if -f was not used during mount
 }
 
