@@ -1,0 +1,136 @@
+name: Test AIO Installscript
+
+on:
+  push:
+    paths:
+      - '0-aio_installscript-vm.sh'
+      - '0-aio_installscript-lxc.sh'
+      - '.github/workflows/test-aio-installscript.yml'
+      - 'scripts/**'
+  pull_request:
+    paths:
+      - '0-aio_installscript-vm.sh'
+      - '0-aio_installscript-lxc.sh'
+      - '.github/workflows/test-aio-installscript.yml'
+      - 'scripts/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.base.repo.name && github.event.pull_request.number || github.repository }}
+  cancel-in-progress: true
+
+jobs:
+  test-vm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: source
+        run: |
+          # Add HashiCorp repository
+          echo "Installing source for vagrant"
+          wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+      - name: update
+        run: |
+          sudo apt-get update
+
+      - name: install
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo apt-get install -y virtualbox vagrant
+
+      - name: create
+        run: |
+          cat <<'EOF' > Vagrantfile
+          Vagrant.configure("2") do |config|
+            config.vm.box = "ubuntu/jammy64"
+            config.vm.provider "virtualbox" do |vb|
+              vb.memory = "2048"
+            end
+            config.vm.provision "file", source: "0-aio_installscript-vm.sh", destination: "/home/vagrant/0-aio_installscript-vm.sh"
+            config.vm.provision "shell", inline: "chmod +x /home/vagrant/0-aio_installscript-vm.sh && sudo /home/vagrant/0-aio_installscript-vm.sh               | tee /vagrant/log_vm-install.log"
+            config.vm.provision "shell", inline: "sleep 5s && sudo bash -c 'systemctl status fivemserver fivemupdater fivembackup fivemdbbackup && docker ps -a' | tee /vagrant/log_vm-running.log"
+          end
+          EOF
+
+      - name: run
+        run: |
+          vagrant up
+
+      - name: log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm-logs
+          path: log_vm-*.log
+
+      - name: destroy
+        if: always()
+        run: |
+          vagrant destroy -f
+
+  test-lxc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: setup
+        uses: canonical/setup-lxd@main
+        with:
+          preseed: |
+            networks:
+            - name: lxdbr0
+              type: bridge
+              config:
+                ipv4.address: auto
+                ipv6.address: none
+
+      - name: init
+        run: |
+          sudo lxd init --auto
+
+      - name: create
+        run: |
+          sudo lxc init ubuntu:22.04 fxserver-test
+          sudo lxc network attach lxdbr0 fxserver-test eth0
+
+      - name: start
+        run: |
+          sudo lxc start fxserver-test
+          sleep 10
+
+      - name: copy
+        run: |
+          sudo lxc file push 0-aio_installscript-lxc.sh fxserver-test/root/0-aio_installscript-lxc.sh
+
+      - name: run
+        run: |
+          sudo lxc exec fxserver-test -- bash -c "chmod +x /root/0-aio_installscript-lxc.sh && /root/0-aio_installscript-lxc.sh                   | tee /root/log_lxc-install.log"
+          sudo lxc exec fxserver-test -- bash -c "sleep 5s && systemctl status fivemserver fivemupdater fivembackup fivemdbbackup apache2 mariadb | tee /root/log_lxc-running.log"
+
+      - name: collect
+        run: |
+          sudo lxc file pull fxserver-test/root/log_lxc-install.log log_lxc-install.log || true
+          sudo lxc file pull fxserver-test/root/log_lxc-running.log log_lxc-running.log || true
+
+      - name: log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lxc-logs
+          path: log_lxc-*.log
+
+      - name: destroy
+        if: always()
+        run: |
+          sudo lxc stop fxserver-test
+          sudo lxc delete fxserver-test --force
