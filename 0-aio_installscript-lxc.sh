@@ -13,8 +13,6 @@ REDM=0 # 0 = no redm, 1 = redm
 apt update && \
   apt install -yy git curl wget
 
-clear
-
 cd /tmp
 git clone $GITREPOLINK $GITFOLDERNAME --branch $GITFOLDERBRANCH --depth=1 --single-branch
 cd $GITFOLDERNAME
