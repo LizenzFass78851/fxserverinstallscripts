@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone
-        uses: actions/checkout@v5
+        uses: actions/checkout@latest
         with:
           fetch-depth: 1
 
@@ -65,7 +65,7 @@ jobs:
 
       - name: log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@latest
         with:
           name: vm-logs
           path: log_vm-*.log
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone
-        uses: actions/checkout@v5
+        uses: actions/checkout@latest
         with:
           fetch-depth: 1
 
@@ -124,7 +124,7 @@ jobs:
 
       - name: log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@latest
         with:
           name: lxc-logs
           path: log_lxc-*.log
