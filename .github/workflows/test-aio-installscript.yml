@@ -47,19 +47,25 @@ jobs:
         run: |
           cat <<'EOF' > Vagrantfile
           Vagrant.configure("2") do |config|
-            config.vm.box = "ubuntu/jammy64"
+            config.vm.box = "cloud-image/ubuntu-24.04"
             config.vm.provider "virtualbox" do |vb|
               vb.memory = "2048"
             end
             config.vm.provision "file", source: "0-aio_installscript-vm.sh", destination: "/home/vagrant/0-aio_installscript-vm.sh"
-            config.vm.provision "shell", inline: "chmod +x /home/vagrant/0-aio_installscript-vm.sh && sudo /home/vagrant/0-aio_installscript-vm.sh               | tee /vagrant/log_vm-install.log"
-            config.vm.provision "shell", inline: "sleep 5s && sudo bash -c 'systemctl status fivemserver fivemupdater fivembackup fivemdbbackup && docker ps -a' | tee /vagrant/log_vm-running.log"
+            config.vm.provision "shell", inline: "chmod +x /home/vagrant/0-aio_installscript-vm.sh && sudo /home/vagrant/0-aio_installscript-vm.sh                | tee /home/vagrant/log_vm-install.log"
+            config.vm.provision "shell", inline: "sleep 10s && sudo bash -c 'systemctl status fivemserver fivemupdater fivembackup fivemdbbackup && docker ps -a' | tee /home/vagrant/log_vm-running.log"
           end
           EOF
 
       - name: run
         run: |
           vagrant up
+
+      - name: collect
+        if: always()
+        run: |
+          vagrant ssh -c "cat /home/vagrant/log_vm-install.log" > log_vm-install.log || true
+          vagrant ssh -c "cat /home/vagrant/log_vm-running.log" > log_vm-running.log || true
 
       - name: log
         if: always()
@@ -96,7 +102,7 @@ jobs:
 
       - name: create
         run: |
-          sudo lxc init ubuntu:22.04 fxserver-test
+          sudo lxc init ubuntu:24.04 fxserver-test
           sudo lxc network attach lxdbr0 fxserver-test eth0
 
       - name: start
@@ -110,10 +116,11 @@ jobs:
 
       - name: run
         run: |
-          sudo lxc exec fxserver-test -- bash -c "chmod +x /root/0-aio_installscript-lxc.sh && /root/0-aio_installscript-lxc.sh                   | tee /root/log_lxc-install.log"
-          sudo lxc exec fxserver-test -- bash -c "sleep 5s && systemctl status fivemserver fivemupdater fivembackup fivemdbbackup apache2 mariadb | tee /root/log_lxc-running.log"
+          sudo lxc exec fxserver-test -- bash -c "chmod +x /root/0-aio_installscript-lxc.sh && /root/0-aio_installscript-lxc.sh                    | tee /root/log_lxc-install.log"
+          sudo lxc exec fxserver-test -- bash -c "sleep 10s && systemctl status fivemserver fivemupdater fivembackup fivemdbbackup apache2 mariadb | tee /root/log_lxc-running.log"
 
       - name: collect
+        if: always()
         run: |
           sudo lxc file pull fxserver-test/root/log_lxc-install.log log_lxc-install.log || true
           sudo lxc file pull fxserver-test/root/log_lxc-running.log log_lxc-running.log || true
