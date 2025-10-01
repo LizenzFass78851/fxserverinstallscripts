@@ -33,13 +33,19 @@ Description=FiveM Server
 
 [Service]
 Type=simple
-ExecStart=${INSTALL_DIR}/run.sh +set serverProfile dev_server +set txAdminPort 40125
+# Environment definitions: https://github.com/citizenfx/txAdmin/blob/master/docs/env-config.md
+#Environment=TXHOST_DATA_PATH=
+Environment=TXHOST_TXA_PORT=40125
+Environment=TXHOST_FXS_PORT=30120
+Environment=TXHOST_GAME_NAME=fivem
+Environment=TXHOST_DEFAULT_DBHOST=localhost
+Environment=TXHOST_DEFAULT_DBPORT=3306
+ExecStart=${INSTALL_DIR}/run.sh
 User=$(whoami)
 Group=$(whoami)
 WorkingDirectory=${INSTALL_DIR}
 
 [Install]
-# Abschnitt wird im Artikel systemd/Units beschrieben
 WantedBy=multi-user.target
 EOL
 

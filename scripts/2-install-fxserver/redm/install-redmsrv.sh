@@ -33,13 +33,19 @@ Description=RedM Server
 
 [Service]
 Type=simple
-ExecStart=${INSTALL_DIR}/run.sh +set serverProfile dev_server +set txAdminPort 40135
+# Environment definitions: https://github.com/citizenfx/txAdmin/blob/master/docs/env-config.md
+#Environment=TXHOST_DATA_PATH=
+Environment=TXHOST_TXA_PORT=40135
+Environment=TXHOST_FXS_PORT=30130
+Environment=TXHOST_GAME_NAME=redm
+Environment=TXHOST_DEFAULT_DBHOST=localhost
+Environment=TXHOST_DEFAULT_DBPORT=3306
+ExecStart=${INSTALL_DIR}/run.sh
 User=$(whoami)
 Group=$(whoami)
 WorkingDirectory=${INSTALL_DIR}
 
 [Install]
-# Abschnitt wird im Artikel systemd/Units beschrieben
 WantedBy=multi-user.target
 EOL
 
