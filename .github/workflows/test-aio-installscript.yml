@@ -22,7 +22,25 @@ concurrency:
 jobs:
   test-vm:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: [24.04, 22.04]
     steps:
+
+      - name: sleep
+        run: |
+          SLEEP="$((1 + $(od -A n -t d -N 2 /dev/urandom | tr -d ' ') % 9))"
+          echo "Sleeping $SLEEP seconds ..."
+          sleep $SLEEP
+  
+      - name: key
+        id: key
+        run: |
+          export TIMESTAMP="$(date -u +%Y%m%d_%H%M%S)"
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "################################################################" && bash -c "echo TIMESTAMP=$TIMESTAMP"
+  
       - name: clone
         uses: actions/checkout@main
 
@@ -47,15 +65,31 @@ jobs:
         run: |
           cat <<'EOF' > Vagrantfile
           Vagrant.configure("2") do |config|
-            config.vm.box = "cloud-image/ubuntu-24.04"
+            config.vm.box = "cloud-image/ubuntu-${{ matrix.ubuntu }}"
+            host_cpus = begin
+              require 'etc'
+              Etc.nprocessors
+            rescue
+              1
+            end
             config.vm.provider "virtualbox" do |vb|
               vb.memory = "2048"
+              vb.cpus = host_cpus
             end
             config.vm.provision "file", source: "0-aio_installscript-vm.sh", destination: "/home/vagrant/0-aio_installscript-vm.sh"
             config.vm.provision "shell", inline: "chmod +x /home/vagrant/0-aio_installscript-vm.sh && sudo /home/vagrant/0-aio_installscript-vm.sh                | tee /home/vagrant/log_vm-install.log"
             config.vm.provision "shell", inline: "sleep 10s && sudo bash -c 'systemctl status fivemserver fivemupdater fivembackup fivemdbbackup && docker ps -a' | tee /home/vagrant/log_vm-running.log"
           end
           EOF
+
+      - name: cache
+        uses: actions/cache@main
+        with:
+          path: |
+            ~/.vagrant.d/boxes
+          key: ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-${{ steps.key.outputs.timestamp }}
+          restore-keys: |
+            ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-
 
       - name: run
         run: |
@@ -71,7 +105,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: vm-logs
+          name: ${{ github.job }}-${{ matrix.ubuntu }}-logs
           path: log_vm-*.log
 
       - name: destroy
@@ -81,7 +115,18 @@ jobs:
 
   test-lxc:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: [24.04, 22.04]
     steps:
+
+      - name: sleep
+        run: |
+          SLEEP="$((1 + $(od -A n -t d -N 2 /dev/urandom | tr -d ' ') % 9))"
+          echo "Sleeping $SLEEP seconds ..."
+          sleep $SLEEP
+
       - name: clone
         uses: actions/checkout@main
 
@@ -102,7 +147,7 @@ jobs:
 
       - name: create
         run: |
-          sudo lxc init ubuntu:24.04 fxserver-test
+          sudo lxc init ubuntu:${{ matrix.ubuntu }} fxserver-test
           sudo lxc network attach lxdbr0 fxserver-test eth0
 
       - name: start
@@ -129,7 +174,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: lxc-logs
+          name: ${{ github.job }}-${{ matrix.ubuntu }}-logs
           path: log_lxc-*.log
 
       - name: destroy
