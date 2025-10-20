@@ -14,6 +14,23 @@ on:
       - '.github/workflows/test-aio-installscript.yml'
       - 'scripts/**'
   workflow_dispatch:
+    inputs:
+      run-vm:
+        description: "Run VM tests"
+        required: true
+        default: "yes"
+        type: choice
+        options:
+          - "yes"
+          - "no"
+      run-lxc:
+        description: "Run LXC tests"
+        required: true
+        default: "yes"
+        type: choice
+        options:
+          - "yes"
+          - "no"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.base.repo.name && github.event.pull_request.number || github.repository }}
@@ -22,6 +39,7 @@ concurrency:
 jobs:
   test-vm:
     runs-on: ubuntu-latest
+    if: ${{ !cancelled() && github.event.inputs.run-vm != 'no' }}
     strategy:
       fail-fast: false
       matrix:
@@ -115,6 +133,7 @@ jobs:
 
   test-lxc:
     runs-on: ubuntu-latest
+    if: ${{ !cancelled() && github.event.inputs.run-lxc != 'no' }}
     strategy:
       fail-fast: false
       matrix:
