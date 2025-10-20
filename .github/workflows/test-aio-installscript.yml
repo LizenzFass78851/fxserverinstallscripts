@@ -34,8 +34,8 @@ jobs:
           echo "Sleeping $SLEEP seconds ..."
           sleep $SLEEP
   
-      - name: key
-        id: key
+      - name: env
+        id: env
         run: |
           export TIMESTAMP="$(date -u +%Y%m%d_%H%M%S)"
           echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
@@ -87,7 +87,7 @@ jobs:
         with:
           path: |
             ~/.vagrant.d/boxes
-          key: ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-${{ steps.key.outputs.timestamp }}
+          key: ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-${{ steps.env.outputs.timestamp }}
           restore-keys: |
             ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-
 
