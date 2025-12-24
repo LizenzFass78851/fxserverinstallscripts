@@ -31,22 +31,63 @@ on:
         options:
           - "yes"
           - "no"
+      os:
+        description: "Ubuntu Version to test (e.g. 20.04)"
+        required: true
+        default: "_all"
+        type: string
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.base.repo.name && github.event.pull_request.number || github.repository }}
   cancel-in-progress: true
 
 jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      os: ${{ steps.parse.outputs.os }}
+    steps:
+      - name: list
+        id: list
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.os }}" != "_all" ]; then \
+            OSLIST="
+            ${{ github.event.inputs.os }}
+            "
+          else
+            OSLIST="
+            20.04
+            22.04
+            24.04
+            "
+          fi
+          echo "oslist<<EOF" >> $GITHUB_OUTPUT
+          echo "$OSLIST" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: parse
+        id: parse
+        run: |
+          OSLIST="${{ steps.list.outputs.oslist }}"
+          OSLIST_JSON=$(echo "$OSLIST" | awk 'NF {printf "\"%s\",", $0}' | sed 's/,$//')
+          echo "os=[$OSLIST_JSON]" >> $GITHUB_OUTPUT
+          echo "################################################################"
+          echo "OSLIST_JSON=[$OSLIST_JSON]"
+
   test-vm:
     runs-on: ubuntu-24.04
     if: ${{ !cancelled() && github.event.inputs.run-vm != 'no' }}
+    needs: [ generate-matrix ]
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: [24.04, 22.04]
+        ubuntu: ${{ fromJson(needs.generate-matrix.outputs.os) }}
     steps:
 
-      - name: sleep
+      - &sleep
+        name: sleep
+        shell: sh
         run: |
           SLEEP="$((1 + $(od -A n -t d -N 2 /dev/urandom | tr -d ' ') % 9))"
           echo "Sleeping $SLEEP seconds ..."
@@ -59,7 +100,8 @@ jobs:
           echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
           echo "################################################################" && bash -c "echo TIMESTAMP=$TIMESTAMP"
   
-      - name: clone
+      - &clone
+        name: clone
         uses: actions/checkout@main
 
       - name: source
@@ -84,10 +126,12 @@ jobs:
           sudo apt-get install -y virtualbox-7.0 vagrant
 
       - name: create
+        env:
+          VAGRANT_CLOUDIMG_PROVIDER: alvistack
         run: |
           cat <<'EOF' > Vagrantfile
           Vagrant.configure("2") do |config|
-            config.vm.box = "cloud-image/ubuntu-${{ matrix.ubuntu }}"
+            config.vm.box = "${{ env.VAGRANT_CLOUDIMG_PROVIDER }}/ubuntu-${{ matrix.ubuntu }}"
             host_cpus = begin
               require 'etc'
               Etc.nprocessors
@@ -138,20 +182,16 @@ jobs:
   test-lxc:
     runs-on: ubuntu-24.04
     if: ${{ !cancelled() && github.event.inputs.run-lxc != 'no' }}
+    needs: [ generate-matrix ]
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: [24.04, 22.04]
+        ubuntu: ${{ fromJson(needs.generate-matrix.outputs.os) }}
     steps:
 
-      - name: sleep
-        run: |
-          SLEEP="$((1 + $(od -A n -t d -N 2 /dev/urandom | tr -d ' ') % 9))"
-          echo "Sleeping $SLEEP seconds ..."
-          sleep $SLEEP
+      - *sleep
 
-      - name: clone
-        uses: actions/checkout@main
+      - *clone
 
       - name: setup
         uses: canonical/setup-lxd@main
