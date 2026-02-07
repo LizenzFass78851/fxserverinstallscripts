@@ -144,7 +144,7 @@ jobs:
             end
             config.vm.provision "file", source: "0-aio_installscript-vm.sh", destination: "/home/vagrant/0-aio_installscript-vm.sh"
             config.vm.provision "shell", inline: "chmod +x /home/vagrant/0-aio_installscript-vm.sh && sudo /home/vagrant/0-aio_installscript-vm.sh                | tee /home/vagrant/log_vm-install.log"
-            config.vm.provision "shell", inline: "sleep 10s && sudo bash -c 'systemctl status fivemserver fivemupdater fivembackup fivemdbbackup && docker ps -a' | tee /home/vagrant/log_vm-running.log"
+            config.vm.provision "shell", inline: "sleep 20s && sudo bash -c 'systemctl status fivemserver fivemupdater fivembackup fivemdbbackup && docker ps -a' | tee /home/vagrant/log_vm-running.log"
           end
           EOF
 
@@ -225,7 +225,7 @@ jobs:
       - name: run
         run: |
           sudo lxc exec fxserver-test -- bash -c "chmod +x /root/0-aio_installscript-lxc.sh && /root/0-aio_installscript-lxc.sh                    | tee /root/log_lxc-install.log"
-          sudo lxc exec fxserver-test -- bash -c "sleep 10s && systemctl status fivemserver fivemupdater fivembackup fivemdbbackup apache2 mariadb | tee /root/log_lxc-running.log"
+          sudo lxc exec fxserver-test -- bash -c "sleep 20s && systemctl status fivemserver fivemupdater fivembackup fivemdbbackup apache2 mariadb | tee /root/log_lxc-running.log"
 
       - name: collect
         if: always()
