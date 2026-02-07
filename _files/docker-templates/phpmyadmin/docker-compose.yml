@@ -1,6 +1,6 @@
 services:
   phpmyadmin:
-    image: linuxserver/phpmyadmin:latest
+    image: phpmyadmin:5
     environment:
       - PMA_ARBITRARY=0
       - PMA_HOST=mariadb
@@ -11,11 +11,11 @@ services:
     depends_on:
       - mariadb
   mariadb:
-    image: linuxserver/mariadb:latest
+    image: mariadb:11.8
     volumes:
-      - './db:/config/databases'
+      - './db:/var/lib/mysql:Z'
     ports:
       - 127.0.0.1:3306:3306
     restart: always
 #    environment:
-#      - MYSQL_ROOT_PASSWORD=linuxserver
+#      - MARIADB_ROOT_PASSWORD=linuxserver

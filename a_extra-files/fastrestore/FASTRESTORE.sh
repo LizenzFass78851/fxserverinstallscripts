@@ -15,7 +15,6 @@ restore-db() {
   docker compose down
   rm -rf db
   cp -ra /root/server/backup/fivem-db-mount/root/server/docker/phpmyadmin/db/ .
-  chmod -R 777 db
   docker compose up -d
   fusermount -u ~/server/backup/fivem-db-mount  # run if -f was not used during mount
 }
