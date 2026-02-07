@@ -138,8 +138,22 @@ jobs:
             rescue
               1
             end
+            host_memory_mb = begin
+              if File.exist?('/proc/meminfo')
+                # Linux
+                mem_kb = File.read('/proc/meminfo')[/MemTotal:\s+(\d+)/, 1].to_i
+                (mem_kb / 1024) / 2
+              else
+                # macOS
+                mem_bytes = `sysctl -n hw.memsize`.to_i
+                (mem_bytes / 1024 / 1024) / 2
+              end
+            rescue
+              1024
+            end
+            host_memory_mb = [[host_memory_mb, 2048].max, 16384].min
             config.vm.provider "virtualbox" do |vb|
-              vb.memory = "2048"
+              vb.memory = host_memory_mb
               vb.cpus = host_cpus
             end
             config.vm.provision "file", source: "0-aio_installscript-vm.sh", destination: "/home/vagrant/0-aio_installscript-vm.sh"
