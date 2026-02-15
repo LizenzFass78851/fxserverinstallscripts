@@ -127,7 +127,7 @@ jobs:
 
       - name: create
         env:
-          VAGRANT_CLOUDIMG_PROVIDER: alvistack
+          VAGRANT_CLOUDIMG_PROVIDER: cloud-image
         run: |
           cat <<'EOF' > Vagrantfile
           Vagrant.configure("2") do |config|
