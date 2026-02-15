@@ -125,6 +125,15 @@ jobs:
         run: |
           sudo apt-get install -y virtualbox-7.0 vagrant
 
+      - name: prepare
+        run: |
+          # Check if KVM modules are loaded and attempt to unload them if they are
+          lsmod | grep kvm \
+          && (echo "KVM modules are loaded, attempting to unload..." \
+          && sudo modprobe -r kvm_intel kvm_amd kvm \
+          || echo "Failed to unload KVM modules") \
+          || echo "KVM modules not loaded, skipping."
+
       - name: create
         env:
           VAGRANT_CLOUDIMG_PROVIDER: cloud-image
