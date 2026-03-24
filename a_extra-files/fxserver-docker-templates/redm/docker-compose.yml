@@ -1,0 +1,51 @@
+services:
+  txadmin:
+    image: spritsail/fivem:latest
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - mariadb
+    volumes:
+      - "./data/config:/config"
+      # Enable a volume mount for txAdmin's data files
+      - "./data/txdata:/txData"
+    ports:
+      - "30130:30130"
+      - "30130:30130/udp"
+      # Allow txAdmin's webserver port to be accessible
+      - "40135:40135"
+    environment:
+      NO_DEFAULT_CONFIG: '1'
+      NO_LICENSE_KEY: '1'
+      TXHOST_TXA_PORT: '40135'
+      TXHOST_FXS_PORT: '30130'
+      TXHOST_GAME_NAME: 'redm'
+      TXHOST_DEFAULT_DBHOST: 'mariadb'
+      TXHOST_DEFAULT_DBPORT: '3306'
+      TXHOST_DEFAULT_DBNAME: 'redm'
+      TXHOST_DEFAULT_DBUSER: 'redm'
+      TXHOST_DEFAULT_DBPASS: 'change-me'
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    environment:
+      - PMA_ARBITRARY=0
+      - PMA_HOST=mariadb
+    ports:
+      - 8083:80
+    restart: always
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:11.8
+    volumes:
+      - './db:/var/lib/mysql:Z'
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=change-me
+      - MARIADB_DATABASE=redm
+      - MARIADB_USER=redm
+      - MARIADB_PASSWORD=change-me
+
