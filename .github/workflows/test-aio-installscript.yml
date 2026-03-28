@@ -75,7 +75,7 @@ jobs:
           echo "OSLIST_JSON=[$OSLIST_JSON]"
 
   test-vm:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     if: ${{ !cancelled() && github.event.inputs.run-vm != 'no' }}
     needs: [ generate-matrix ]
     strategy:
@@ -123,15 +123,18 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo apt-get install -y virtualbox-7.0 vagrant
+          echo "################################################################"
+          cat /var/log/vbox-setup.log || true
 
       - name: prepare
         run: |
           # Check if KVM modules are loaded and attempt to unload them if they are
-          lsmod | grep kvm \
-          && (echo "KVM modules are loaded, attempting to unload..." \
-          && sudo modprobe -r kvm_intel kvm_amd kvm \
-          || echo "Failed to unload KVM modules") \
-          || echo "KVM modules not loaded, skipping."
+          if lsmod | grep -q kvm; then
+            echo "KVM modules are loaded, attempting to unload..."
+            sudo modprobe -r kvm_intel kvm_amd kvm || echo "Failed to unload KVM modules"
+          else
+            echo "KVM modules not loaded, skipping."
+          fi
 
       - name: create
         env:
@@ -202,7 +205,7 @@ jobs:
           vagrant destroy -f
 
   test-lxc:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     if: ${{ !cancelled() && github.event.inputs.run-lxc != 'no' }}
     needs: [ generate-matrix ]
     strategy:
