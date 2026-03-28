@@ -2,6 +2,13 @@
 
 set -e # Exit the script on error
 
+if command -v docker &> /dev/null; then
+    if docker ps --format '{{.Names}}' | grep -qE 'fivem|redm'; then
+        echo "Docker containers for FiveM or RedM are already running. Skipping automated updater installation."
+        exit 0
+    fi
+fi
+
 install_fivemupdater() {
 # Create updater directory
 mkdir -p ~/server/fivem/_autom-updater

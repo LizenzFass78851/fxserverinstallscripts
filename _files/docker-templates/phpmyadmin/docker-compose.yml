@@ -1,17 +1,18 @@
 services:
   phpmyadmin:
     image: phpmyadmin:5
+    container_name: phpmyadmin
     environment:
       - PMA_ARBITRARY=0
       - PMA_HOST=mariadb
     ports:
       - 8080:80
-#      - 8443:443
     restart: always
     depends_on:
       - mariadb
   mariadb:
     image: mariadb:11.8
+    container_name: mariadb
     volumes:
       - './db:/var/lib/mysql:Z'
     ports:

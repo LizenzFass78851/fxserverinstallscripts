@@ -12,6 +12,12 @@ if [ ! -f README.md ]; then
     wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
 fi
 
+# Download FASTRESTORE.sh
+if [ ! -f FASTRESTORE.sh ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/FASTRESTORE.sh
+    chmod +x FASTRESTORE.sh
+fi
+
 # Install required packages
 if [ ! -e /bin/borg ]; then
     apt update && apt install -y borgbackup python3-pyfuse3
@@ -58,6 +64,12 @@ if [ ! -f README.md ]; then
     wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
 fi
 
+# Download FASTRESTORE.sh
+if [ ! -f FASTRESTORE.sh ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/FASTRESTORE.sh
+    chmod +x FASTRESTORE.sh
+fi
+
 # Install required packages
 if [ ! -e /bin/borg ]; then
     apt update && apt install -y borgbackup python3-pyfuse3
@@ -102,6 +114,12 @@ cd ~/server/backup
 # Download README
 if [ ! -f README.md ]; then
     wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+fi
+
+# Download FASTRESTORE.sh
+if [ ! -f FASTRESTORE.sh ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/FASTRESTORE.sh
+    chmod +x FASTRESTORE.sh
 fi
 
 # Install required packages

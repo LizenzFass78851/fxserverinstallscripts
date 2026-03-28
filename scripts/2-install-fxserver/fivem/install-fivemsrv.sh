@@ -18,6 +18,14 @@ SERVICE_FILE=/etc/systemd/system/fivemserver.service
 mkdir -p ${INSTALL_DIR}
 cd ${INSTALL_DIR}
 
+if command -v docker &> /dev/null; then
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/docker-templates/fivem/docker-compose.yml
+
+docker compose up -d
+
+echo "docker ps can be used to query the status of the service"
+else
+
 wget ${DL_URL} -O fx.tar.xz
 
 tar -xvf fx.tar.xz && rm fx.tar.xz
@@ -53,4 +61,6 @@ systemctl enable fivemserver.service
 systemctl start fivemserver.service
 
 echo "systemctl status fivemserver.service can be used to query the status of the service"
+fi
+
 echo "Don't forget to use the command 'chmod -R 777 /txData/' and repeat this if there is data or several users who should help cannot write to it"

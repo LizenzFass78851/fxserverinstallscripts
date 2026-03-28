@@ -1,0 +1,26 @@
+services:
+  fivem:
+    image: spritsail/fivem:latest
+    container_name: fivem
+    restart: always
+    stdin_open: true
+    tty: true
+    volumes:
+      - "./config:/config"
+      # Enable a volume mount for txAdmin's data files
+      - "/txData:/txData"
+    ports:
+      - "30120:30120"
+      - "30120:30120/udp"
+      # Allow txAdmin's webserver port to be accessible
+      - "40125:40125"
+    network_mode: "host"
+    environment:
+      NO_DEFAULT_CONFIG: '1'
+      NO_LICENSE_KEY: '1'
+      TXHOST_TXA_PORT: '40125'
+      TXHOST_FXS_PORT: '30120'
+      TXHOST_GAME_NAME: 'fivem'
+      TXHOST_DEFAULT_DBHOST: 'localhost'
+      TXHOST_DEFAULT_DBPORT: '3306'
+

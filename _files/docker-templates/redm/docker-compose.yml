@@ -1,0 +1,25 @@
+services:
+  redm:
+    image: spritsail/fivem:latest
+    container_name: redm
+    restart: always
+    stdin_open: true
+    tty: true
+    volumes:
+      - "./config:/config"
+      # Enable a volume mount for txAdmin's data files
+      - "/txData_rdr2:/txData"
+    ports:
+      - "30130:30130"
+      - "30130:30130/udp"
+      # Allow txAdmin's webserver port to be accessible
+      - "40135:40135"
+    network_mode: "host"
+    environment:
+      NO_DEFAULT_CONFIG: '1'
+      NO_LICENSE_KEY: '1'
+      TXHOST_TXA_PORT: '40135'
+      TXHOST_FXS_PORT: '30130'
+      TXHOST_GAME_NAME: 'redm'
+      TXHOST_DEFAULT_DBHOST: 'localhost'
+      TXHOST_DEFAULT_DBPORT: '3306'

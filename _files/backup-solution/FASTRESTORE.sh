@@ -11,33 +11,30 @@ echo "The example may differ if you want to mount redm or fivem-db."
 
 restore-db() {
   echo "Restoring fivem-db"
-  cd ~/server/docker/phpmyadmin
-  docker compose down
-  rm -rf db
-  cp -ra /root/server/backup/fivem-db-mount/root/server/docker/phpmyadmin/db/ .
-  docker compose up -d
+  (cd ~/server/docker/phpmyadmin && docker compose down)
+  rm -rf ~/server/docker/phpmyadmin/db
+  cp -ra ~/server/backup/fivem-db-mount/root/server/docker/phpmyadmin/db/ .
+  (cd ~/server/docker/phpmyadmin && docker compose up -d)
   fusermount -u ~/server/backup/fivem-db-mount  # run if -f was not used during mount
 }
 
 restore-fivem() {
   echo "Restoring fivem"
-  cd ~/server/backup
-  systemctl stop fivemserver
+  systemctl stop fivemserver || (cd ~/server/fivem && docker compose down)
   rm -rf /txData/
-  cp -ra fivem-mount/txData/ /
+  cp -ra ~/server/backup/fivem-mount/txData/ /
   chmod -R 777 /txData/
-  systemctl start fivemserver
+  systemctl start fivemserver || (cd ~/server/fivem && docker compose up -d)
   fusermount -u ~/server/backup/fivem-mount  # run if -f was not used during mount
 }
 
 restore-redm() {
   echo "Restoring redm"
-  cd ~/server/backup
-  systemctl stop redmserver
+  systemctl stop redmserver || (cd ~/server/redm && docker compose down)
   rm -rf /txData_rdr2/
-  cp -ra fivem-mount/txData_rdr2/ /
+  cp -ra ~/server/backup/redm-mount/txData_rdr2/ /
   chmod -R 777 /txData_rdr2/
-  systemctl start redmserver
+  systemctl start redmserver || (cd ~/server/redm && docker compose up -d)
   fusermount -u ~/server/backup/redm-mount  # run if -f was not used during mount
 }
 
