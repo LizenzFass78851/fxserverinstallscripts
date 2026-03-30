@@ -19,9 +19,7 @@ if [ ! -f FASTRESTORE.sh ]; then
 fi
 
 # Install required packages
-if [ ! -e /bin/borg ]; then
-    apt update && apt install -y borgbackup python3-pyfuse3
-fi
+apt update && apt install -y borgbackup python3-pyfuse3 rsync
 
 # Initialize borg repositories
 borg init --encryption none -v ~/server/backup/fivem
