@@ -15,6 +15,8 @@ services:
       # Allow txAdmin's webserver port to be accessible
       - "40135:40135"
     network_mode: "host"
+    group_add:
+      - 1600 # Add the container's user to the 'team' group with GID 1600
     environment:
       NO_DEFAULT_CONFIG: '1'
       NO_LICENSE_KEY: '1'

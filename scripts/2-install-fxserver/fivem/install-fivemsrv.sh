@@ -63,4 +63,22 @@ systemctl start fivemserver.service
 echo "systemctl status fivemserver.service can be used to query the status of the service"
 fi
 
-echo "Don't forget to use the command 'chmod -R 777 /txData/' and repeat this if there is data or several users who should help cannot write to it"
+if ! getent group team > /dev/null; then
+  echo "Creating 'team' group with GID 1600..."
+  addgroup --gid 1600 team
+else
+  if [ "$(getent group team | cut -d: -f3)" -ne 1600 ]; then
+    echo "Group 'team' already exists but has a different GID. Please change its GID to 1600 or choose a different group name and update the script accordingly."
+    exit 1
+  else
+    echo "Group 'team' already exists with GID 1600."
+  fi
+fi
+
+for i in $(seq 1 5); do
+  chgrp -R team /txData/
+  chmod -R 2775 /txData/
+done
+
+echo "Don't forget to use the command 'chgrp -R team /txData/ && chmod -R 2775 /txData/' and repeat this if there is data or several users who should help cannot write to it"
+echo "Add users to the 'team' group with 'adduser <username> team' to allow them to write to the txData directory"
