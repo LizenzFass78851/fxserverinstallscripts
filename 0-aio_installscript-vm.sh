@@ -9,6 +9,7 @@ GITREPOLINK=https://github.com/LizenzFass78851/fxserverinstallscripts
 BACKUPSOLUTION=1 # 0 = no backup, 1 = backup
 FIVEM=1 # 0 = no fivem, 1 = fivem
 REDM=0 # 0 = no redm, 1 = redm
+TXADMINASDOCKER=0 # 0 = run without docker, 1 = run with docker
 
 apt update && \
   apt install -yy git curl wget
@@ -28,6 +29,9 @@ SCRIPTS=$(find $PWD/ \
   | sort)
 
 LOGFILE=~/$(date '+%Y-%m-%d-%H:%M:%S')-aio_installscript-vm.log
+
+# Export variables to child processes
+export TXADMINASDOCKER
 
 for SCRIPT in ${SCRIPTS}; do
     echo ============================================================= | tee -a $LOGFILE

@@ -18,7 +18,7 @@ SERVICE_FILE=/etc/systemd/system/fivemserver.service
 mkdir -p ${INSTALL_DIR}
 cd ${INSTALL_DIR}
 
-if command -v docker &> /dev/null; then
+if [ ${TXADMINASDOCKER:-0} -eq 1 ] && command -v docker &> /dev/null; then
 wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/docker-templates/fivem/docker-compose.yml
 
 docker compose up -d
