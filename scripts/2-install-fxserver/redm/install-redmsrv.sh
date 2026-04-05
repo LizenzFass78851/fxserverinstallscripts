@@ -18,14 +18,6 @@ SERVICE_FILE=/etc/systemd/system/redmserver.service
 mkdir -p ${INSTALL_DIR}
 cd ${INSTALL_DIR}
 
-if [ ${TXADMINASDOCKER:-0} -eq 1 ] && command -v docker &> /dev/null; then
-wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/docker-templates/redm/docker-compose.yml
-
-docker compose up -d
-
-echo "docker ps can be used to query the status of the service"
-else
-
 wget ${DL_URL} -O fx.tar.xz
 
 tar -xvf fx.tar.xz && rm fx.tar.xz
@@ -61,7 +53,6 @@ systemctl enable redmserver.service
 systemctl start redmserver.service
 
 echo "systemctl status redmserver.service can be used to query the status of the service"
-fi
 
 if ! getent group team > /dev/null; then
   echo "Creating 'team' group with GID 1600..."
