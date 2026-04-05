@@ -249,8 +249,8 @@ jobs:
 
       - name: run
         run: |
-          sudo lxc exec fxserver-test -- bash -c "chmod +x /root/0-aio_installscript-lxc.sh && /root/0-aio_installscript-lxc.sh                                      | tee /root/log_lxc-install.log"
-          sudo lxc exec fxserver-test -- bash -c "sleep 20s && systemctl status fivemserver fivemupdater fivembackup fivemdbbackup apache2 mariadb && ls -la /txData | tee /root/log_lxc-running.log"
+          sudo lxc exec fxserver-test -- bash -c "chmod +x /root/0-aio_installscript-lxc.sh && /root/0-aio_installscript-lxc.sh                        | tee /root/log_lxc-install.log"
+          sudo lxc exec fxserver-test -- bash -c "sleep 20s && systemctl status fivemserver fivemupdater fivembackup apache2 mariadb && ls -la /txData | tee /root/log_lxc-running.log"
 
       - name: collect
         if: always()
