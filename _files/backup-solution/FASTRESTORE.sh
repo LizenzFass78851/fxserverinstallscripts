@@ -57,8 +57,7 @@ restore-db() {
   fi
   echo "Restoring fivem-db"
   (cd $app_dir && docker compose down)
-  rm -rf $app_dir/db
-  rsync -av --progress "$mount_point/root/server/docker/phpmyadmin/db/" $app_dir/db/
+  rsync --archive --verbose --delete --acls --progress "$mount_point/root/server/docker/phpmyadmin/db/" $app_dir/db/
   (cd $app_dir && docker compose up -d)
   fusermount -u "$mount_point"  # run if -f was not used during mount
 }
@@ -80,8 +79,7 @@ restore-fivem() {
   else
     systemctl stop fivemserver
   fi
-  rm -rf /txData/
-  rsync -av --progress "$mount_point/txData/" /txData/
+  rsync --archive --verbose --delete --acls --progress "$mount_point/txData/" /txData/
   chmod -R 777 /txData/
   if [ -f $app_dir/docker-compose.yml ]; then
     (cd $app_dir && docker compose up -d)
@@ -108,8 +106,7 @@ restore-redm() {
   else
     systemctl stop redmserver
   fi
-  rm -rf /txData_rdr2/
-  rsync -av --progress "$mount_point/txData_rdr2/" /txData_rdr2/
+  rsync --archive --verbose --delete --acls --progress "$mount_point/txData_rdr2/" /txData_rdr2/
   chmod -R 777 /txData_rdr2/
   if [ -f $app_dir/docker-compose.yml ]; then
     (cd $app_dir && docker compose up -d)
