@@ -20,6 +20,7 @@ A collection of scripts to install the FXserver and additional extensions.
 > - So far only tested on the following systems:
 >   - `Ubuntu 22.04`
 >   - `Ubuntu 24.04`
+>   - `Ubuntu 26.04`
 
 ### Test state:
 [![Test AIO Installscript](https://github.com/LizenzFass78851/fxserverinstallscripts/actions/workflows/test-aio-installscript.yml/badge.svg?branch=main)](https://github.com/LizenzFass78851/fxserverinstallscripts/actions/workflows/test-aio-installscript.yml)
