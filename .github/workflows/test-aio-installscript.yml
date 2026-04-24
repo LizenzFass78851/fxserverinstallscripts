@@ -59,6 +59,7 @@ jobs:
             OSLIST="
             22.04
             24.04
+            26.04
             "
           fi
           echo "oslist<<EOF" >> $GITHUB_OUTPUT
