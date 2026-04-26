@@ -17,7 +17,16 @@ if {[llength $argv] == 0} {
 }
 set PASSWORD [lindex $argv 0];
 
-spawn mysql_secure_installation
+set cmd [auto_execok mysql_secure_installation]
+if {$cmd eq ""} {
+    set cmd [auto_execok mariadb-secure-installation]
+}
+if {$cmd eq ""} {
+    send_user "Error: Neither mysql_secure_installation nor mariadb-secure-installation found\n"
+    exit 1
+}
+
+spawn $cmd
 set mysql_spawn_id $spawn_id
 
 # optionally, redirect output to log file (silent install)
