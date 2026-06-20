@@ -76,13 +76,15 @@ jobs:
           echo "OSLIST_JSON=[$OSLIST_JSON]"
 
   test-vm:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ !cancelled() && github.event.inputs.run-vm != 'no' }}
     needs: [ generate-matrix ]
     strategy:
       fail-fast: false
       matrix:
         ubuntu: ${{ fromJson(needs.generate-matrix.outputs.os) }}
+    env:
+      VAGRANT_DEFAULT_PROVIDER: virtualbox
     steps:
 
       - &sleep
@@ -110,10 +112,6 @@ jobs:
           echo "Installing source for vagrant"
           wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          # Add Oracle VirtualBox repository
-          echo "Installing source for virtualbox"
-          wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo gpg --dearmor -o /usr/share/keyrings/oracle-vbox-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/oracle-vbox-archive-keyring.gpg] https://download.virtualbox.org/virtualbox/debian $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 
       - name: update
         run: |
@@ -123,9 +121,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get install -y virtualbox-7.0 vagrant
-          echo "################################################################"
-          cat /var/log/vbox-setup.log || true
+          sudo apt-get install -y virtualbox vagrant
 
       - name: prepare
         run: |
@@ -206,7 +202,7 @@ jobs:
           vagrant destroy -f
 
   test-lxc:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ !cancelled() && github.event.inputs.run-lxc != 'no' }}
     needs: [ generate-matrix ]
     strategy:
