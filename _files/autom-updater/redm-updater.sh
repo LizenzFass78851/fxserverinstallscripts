@@ -18,7 +18,7 @@ do
    # for newer versions (experimental code to download the newer versions)
    DL_URL="${SRV_ADR}$(wget -qO- "$SRV_ADR" | grep -oE 'href="\./[0-9]+-[^/]+/fx\.tar\.xz"' | sed -E 's#href="\./([^"]+)".*#\1#' | sort -t- -k1,1n | tail -n1)"
    # for tagged versions
-   #DL_URL=https://runtime.redm.net/artifacts/redm/build_proot_linux/master/9956-41b2e627e3b80ddbba4d63cb74968ac3d5926eb6/fx.tar.xz
+   #DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/9956-41b2e627e3b80ddbba4d63cb74968ac3d5926eb6/fx.tar.xz
 
    if [ -f ./${DOWNLOAD_FILE} ]; then
         echo "Removing leftover files"
