@@ -6,6 +6,12 @@ SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
 SERVER_DIR=~/server/redm
 UPDATE_INTERVAL=48h
 DOWNLOAD_FILE=fx.tar.xz
+COMPARE_FILE=.compare-buildversion.txt
+
+sleeping() {
+   echo "Waiting for next update interval (${UPDATE_INTERVAL})"
+   sleep ${UPDATE_INTERVAL}
+}
 
 while true
 do
@@ -19,6 +25,16 @@ do
    DL_URL="${SRV_ADR}$(wget -qO- "$SRV_ADR" | grep -oE 'href="\./[0-9]+-[^/]+/fx\.tar\.xz"' | sed -E 's#href="\./([^"]+)".*#\1#' | sort -t- -k1,1n | tail -n1)"
    # for tagged versions
    #DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/9956-41b2e627e3b80ddbba4d63cb74968ac3d5926eb6/fx.tar.xz
+
+   build=$(echo "${DL_URL}" | grep -oE '[0-9]+-[^/]+')
+
+   if [ -f ./${COMPARE_FILE} ]; then
+        last_version=$(cat ./${COMPARE_FILE})
+        if [ "${last_version}" == "${build}" ]; then
+            sleeping
+            continue
+        fi
+   fi
 
    if [ -f ./${DOWNLOAD_FILE} ]; then
         echo "Removing leftover files"
@@ -34,7 +50,8 @@ do
         wget ${DL_URL} -O "${DOWNLOAD_FILE}"
         if [ ! -f ./${DOWNLOAD_FILE} ]; then
             echo "Failed to download ${DL_URL}, exiting"
-            exit 1
+            sleeping
+            continue
         fi
    fi
    
@@ -47,6 +64,6 @@ do
    echo "Starting FiveM service"
    systemctl start redmserver.service
 
-   echo "Waiting for next update interval (${UPDATE_INTERVAL})"
-   sleep ${UPDATE_INTERVAL}
+   echo "Updating compare file with new version"
+   echo "${build}" > ./${COMPARE_FILE}
 done
