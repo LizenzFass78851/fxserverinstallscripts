@@ -18,7 +18,7 @@ cat <<EOF >/etc/systemd/system/fivemupdater.service
 Description=FiveM Updater
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=$(echo ~)/server/fivem/_autom-updater/fivem-updater.sh
 User=$(whoami)
 Group=$(whoami)
@@ -29,10 +29,24 @@ WorkingDirectory=$(echo ~)/server/fivem/_autom-updater
 WantedBy=multi-user.target
 EOF
 
-# Enable and start the service
-systemctl enable --now fivemupdater.service
+cat <<EOF >/etc/systemd/system/fivemupdater.timer
+[Unit]
+Description=Run FiveM Updater every 2 days
 
-echo "systemctl status fivemupdater.service" can be used to query the status of the service
+[Timer]
+OnCalendar=*-*-* 06:00:00
+OnUnitActiveSec=2d
+Persistent=true
+AccuracySec=1h
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the service
+systemctl enable --now fivemupdater.service fivemupdater.timer
+
+echo "systemctl status fivemupdater.service fivemupdater.timer" can be used to query the status of the service
 }
 
 install_redmupdater() {
@@ -62,10 +76,24 @@ WorkingDirectory=$(echo ~)/server/redm/_autom-updater
 WantedBy=multi-user.target
 EOF
 
-# Enable and start the service
-systemctl enable --now redmupdater.service
+cat <<EOF >/etc/systemd/system/redmupdater.timer
+[Unit]
+Description=Run RedM Updater every 2 days
 
-echo "systemctl status redmupdater.service" can be used to query the status of the service
+[Timer]
+OnCalendar=*-*-* 06:00:00
+OnUnitActiveSec=2d
+Persistent=true
+AccuracySec=1h
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the service
+systemctl enable --now redmupdater.service redmupdater.timer
+
+echo "systemctl status redmupdater.service redmupdater.timer" can be used to query the status of the service
 }
 
 if [ -d ~/server/fivem ]; then
