@@ -31,7 +31,7 @@ EOF
 
 cat <<EOF >/etc/systemd/system/fivemupdater.timer
 [Unit]
-Description=Run FiveM Updater every 2 days
+Description=Run FiveM Updater
 
 [Timer]
 OnCalendar=*-*-* 06:00:00
@@ -78,7 +78,7 @@ EOF
 
 cat <<EOF >/etc/systemd/system/redmupdater.timer
 [Unit]
-Description=Run RedM Updater every 2 days
+Description=Run RedM Updater
 
 [Timer]
 OnCalendar=*-*-* 06:00:00

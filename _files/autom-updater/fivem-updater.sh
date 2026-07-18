@@ -28,6 +28,7 @@ build=$(echo "${DL_URL}" | grep -oE '[0-9]+-[^/]+')
 if [ -f ./${COMPARE_FILE} ]; then
      last_version=$(cat ./${COMPARE_FILE})
      if [ "${last_version}" == "${build}" ]; then
+         echo "No new version available. Current version: ${last_version}. Exiting."
          exiting
      fi
 fi
