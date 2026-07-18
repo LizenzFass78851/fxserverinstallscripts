@@ -181,6 +181,10 @@ jobs:
           restore-keys: |
             ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-
 
+      - name: update
+        run: |
+          vagrant box update || true
+
       - name: run
         run: |
           vagrant up
