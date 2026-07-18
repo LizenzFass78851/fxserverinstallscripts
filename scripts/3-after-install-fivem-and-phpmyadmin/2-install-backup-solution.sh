@@ -35,7 +35,7 @@ cat <<EOF >/etc/systemd/system/fivembackup.service
 Description=FiveM Backup
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=$(echo ~)/server/backup/fivem-backup.sh
 User=$(whoami)
 Group=$(whoami)
@@ -46,10 +46,24 @@ WorkingDirectory=$(echo ~)/server/backup
 WantedBy=multi-user.target
 EOF
 
-# Enable and start the services
-systemctl enable --now fivembackup.service
+cat <<EOF >/etc/systemd/system/fivembackup.timer
+[Unit]
+Description=Run FiveM Backup
 
-echo "systemctl status fivembackup.service" can be used to query the status of the service
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=6h
+Persistent=true
+AccuracySec=10m
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the services
+systemctl enable --now fivembackup.service fivembackup.timer
+
+echo "systemctl status fivembackup.service fivembackup.timer" can be used to query the status of the service
 }
 
 install_fivem-db_backup_solution() {
@@ -87,7 +101,7 @@ cat <<EOF >/etc/systemd/system/fivemdbbackup.service
 Description=FiveM DB Backup
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=$(echo ~)/server/backup/fivem-db-backup.sh
 User=$(whoami)
 Group=$(whoami)
@@ -98,10 +112,24 @@ WorkingDirectory=$(echo ~)/server/backup
 WantedBy=multi-user.target
 EOF
 
-# Enable and start the services
-systemctl enable --now fivemdbbackup.service
+cat <<EOF >/etc/systemd/system/fivemdbbackup.timer
+[Unit]
+Description=Run FiveM DB Backup
 
-echo "systemctl status fivemdbbackup.service" can be used to query the status of the service
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=6h
+Persistent=true
+AccuracySec=10m
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the services
+systemctl enable --now fivemdbbackup.service fivemdbbackup.timer
+
+echo "systemctl status fivemdbbackup.service fivemdbbackup.timer" can be used to query the status of the service
 }
 
 install_redm_backup_solution() {
@@ -139,7 +167,7 @@ cat <<EOF >/etc/systemd/system/redmbackup.service
 Description=RedM Backup
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=$(echo ~)/server/backup/redm-backup.sh
 User=$(whoami)
 Group=$(whoami)
@@ -150,10 +178,24 @@ WorkingDirectory=$(echo ~)/server/backup
 WantedBy=multi-user.target
 EOF
 
-# Enable and start the services
-systemctl enable --now redmbackup.service
+cat <<EOF >/etc/systemd/system/redmbackup.timer
+[Unit]
+Description=Run RedM Backup
 
-echo "systemctl status redmbackup.service" can be used to query the status of the service
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=6h
+Persistent=true
+AccuracySec=10m
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the services
+systemctl enable --now redmbackup.service redmbackup.timer
+
+echo "systemctl status redmbackup.service redmbackup.timer" can be used to query the status of the service
 }
 
 if [ -d ~/server/fivem ]; then
