@@ -13,8 +13,6 @@ on:
       - '0-aio_installscript-lxc.sh'
       - '.github/workflows/test-aio-installscript.yml'
       - 'scripts/**'
-  schedule:
-    - cron: "0 4 */2 * 0"
   workflow_dispatch:
     inputs:
       run-vm:
