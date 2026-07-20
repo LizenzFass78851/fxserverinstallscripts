@@ -54,7 +54,7 @@ nano /etc/systemd/system/fivembackup.service
 Description=FiveM Backup
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/root/server/backup/fivem-backup.sh
 User=root
 Group=root
@@ -65,9 +65,31 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-systemctl enable fivembackup.service
-systemctl start fivembackup.service
-systemctl status fivembackup.service
+nano /etc/systemd/system/fivembackup.timer
+```
+
+```ini
+[Unit]
+Description=Run FiveM Backup
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+#OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* 06:00:00
+#OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 12:00:00
+#OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 18:00:00
+#OnCalendar=*-*-* 21:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+```bash
+systemctl enable --now fivemupdater.service fivemupdater.timer
+systemctl status fivembackup.service fivemupdater.timer
 ```
 
 ### Example for fivem-backup.sh
