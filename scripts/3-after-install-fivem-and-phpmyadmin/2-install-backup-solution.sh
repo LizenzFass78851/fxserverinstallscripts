@@ -51,10 +51,15 @@ cat <<EOF >/etc/systemd/system/fivembackup.timer
 Description=Run FiveM Backup
 
 [Timer]
-OnBootSec=5min
-OnUnitActiveSec=6h
+OnCalendar=*-*-* 00:00:00
+#OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* 06:00:00
+#OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 12:00:00
+#OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 18:00:00
+#OnCalendar=*-*-* 21:00:00
 Persistent=true
-AccuracySec=10m
 
 [Install]
 WantedBy=timers.target
@@ -117,10 +122,15 @@ cat <<EOF >/etc/systemd/system/fivemdbbackup.timer
 Description=Run FiveM DB Backup
 
 [Timer]
-OnBootSec=5min
-OnUnitActiveSec=6h
+OnCalendar=*-*-* 00:00:00
+#OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* 06:00:00
+#OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 12:00:00
+#OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 18:00:00
+#OnCalendar=*-*-* 21:00:00
 Persistent=true
-AccuracySec=10m
 
 [Install]
 WantedBy=timers.target
@@ -183,10 +193,15 @@ cat <<EOF >/etc/systemd/system/redmbackup.timer
 Description=Run RedM Backup
 
 [Timer]
-OnBootSec=5min
-OnUnitActiveSec=6h
+OnCalendar=*-*-* 00:00:00
+#OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* 06:00:00
+#OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 12:00:00
+#OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 18:00:00
+#OnCalendar=*-*-* 21:00:00
 Persistent=true
-AccuracySec=10m
 
 [Install]
 WantedBy=timers.target

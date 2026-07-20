@@ -34,10 +34,14 @@ cat <<EOF >/etc/systemd/system/fivemupdater.timer
 Description=Run FiveM Updater
 
 [Timer]
-OnCalendar=*-*-* 06:00:00
-OnUnitActiveSec=2d
+OnCalendar=Mon *-*-* 06:00:00
+#OnCalendar=Tue *-*-* 06:00:00
+OnCalendar=Wed *-*-* 06:00:00
+#OnCalendar=Thu *-*-* 06:00:00
+OnCalendar=Fri *-*-* 06:00:00
+#OnCalendar=Sat *-*-* 06:00:00
+OnCalendar=Sun *-*-* 06:00:00
 Persistent=true
-AccuracySec=1h
 
 [Install]
 WantedBy=timers.target
@@ -81,10 +85,14 @@ cat <<EOF >/etc/systemd/system/redmupdater.timer
 Description=Run RedM Updater
 
 [Timer]
-OnCalendar=*-*-* 06:00:00
-OnUnitActiveSec=2d
+OnCalendar=Mon *-*-* 06:00:00
+#OnCalendar=Tue *-*-* 06:00:00
+OnCalendar=Wed *-*-* 06:00:00
+#OnCalendar=Thu *-*-* 06:00:00
+OnCalendar=Fri *-*-* 06:00:00
+#OnCalendar=Sat *-*-* 06:00:00
+OnCalendar=Sun *-*-* 06:00:00
 Persistent=true
-AccuracySec=1h
 
 [Install]
 WantedBy=timers.target
