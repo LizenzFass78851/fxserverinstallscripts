@@ -95,13 +95,6 @@ jobs:
           echo "Sleeping $SLEEP seconds ..."
           sleep $SLEEP
   
-      - name: env
-        id: env
-        run: |
-          export TIMESTAMP="$(date -u +%Y%m%d_%H%M%S)"
-          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-          echo "################################################################" && bash -c "echo TIMESTAMP=$TIMESTAMP"
-  
       - &clone
         name: clone
         uses: actions/checkout@main
@@ -175,7 +168,7 @@ jobs:
         with:
           path: |
             ~/.vagrant.d/boxes
-          key: ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-${{ steps.env.outputs.timestamp }}
+          key: ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-${{ github.run_id }}
           restore-keys: |
             ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-
 
