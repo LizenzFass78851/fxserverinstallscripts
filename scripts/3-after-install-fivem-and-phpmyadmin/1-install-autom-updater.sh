@@ -53,6 +53,57 @@ systemctl enable --now fivemupdater.service fivemupdater.timer
 echo "systemctl status fivemupdater.service fivemupdater.timer" can be used to query the status of the service
 }
 
+install_fivemenhancedupdater() {
+# Create updater directory
+mkdir -p ~/server/fivemenhanced/_autom-updater
+cd ~/server/fivemenhanced/_autom-updater
+
+# Download and set permissions for updater script
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/autom-updater/fivemenhanced-updater.sh
+chmod +x fivemenhanced-updater.sh
+
+# Create systemd service file for updater
+cat <<EOF >/etc/systemd/system/fivemenhancedupdater.service
+[Unit]
+# Section described in the article systemd/Units
+Description=FiveM Enhanced Updater
+
+[Service]
+Type=oneshot
+ExecStart=$(echo ~)/server/fivemenhanced/_autom-updater/fivemenhanced-updater.sh
+User=$(whoami)
+Group=$(whoami)
+WorkingDirectory=$(echo ~)/server/fivemenhanced/_autom-updater
+
+[Install]
+# Section described in the article systemd/Units
+WantedBy=multi-user.target
+EOF
+
+cat <<EOF >/etc/systemd/system/fivemenhancedupdater.timer
+[Unit]
+Description=Run FiveM Enhanced Updater
+
+[Timer]
+OnCalendar=Mon *-*-* 06:00:00
+#OnCalendar=Tue *-*-* 06:00:00
+OnCalendar=Wed *-*-* 06:00:00
+#OnCalendar=Thu *-*-* 06:00:00
+OnCalendar=Fri *-*-* 06:00:00
+#OnCalendar=Sat *-*-* 06:00:00
+OnCalendar=Sun *-*-* 06:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the service
+systemctl enable --now fivemenhancedupdater.service fivemenhancedupdater.timer
+
+echo "systemctl status fivemenhancedupdater.service fivemenhancedupdater.timer" can be used to query the status of the service
+}
+
 install_redmupdater() {
 # Create updater directory
 mkdir -p ~/server/redm/_autom-updater
@@ -108,6 +159,11 @@ if [ -d ~/server/fivem ]; then
     install_fivemupdater
 else
     echo "FiveM server directory not found. Skipping FiveM updater installation."
+fi
+if [ -d ~/server/fivemenhanced ]; then
+    install_fivemenhancedupdater
+else
+    echo "FiveM Enhanced server directory not found. Skipping FiveM Enhanced updater installation."
 fi
 if [ -d ~/server/redm ]; then
     install_redmupdater

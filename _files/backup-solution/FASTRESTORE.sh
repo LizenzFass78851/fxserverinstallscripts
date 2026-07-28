@@ -89,6 +89,33 @@ restore-fivem() {
   fusermount -u "$mount_point"  # run if -f was not used during mount
 }
 
+restore-fivemenhanced() {
+  local repo=~/server/backup/fivemenhanced
+  local mount_point=~/server/backup/fivemenhanced-mount
+  local app_dir=~/server/fivemenhanced
+  select_backup "$repo" "$mount_point"
+  if [ "$VIEW_ONLY_MODE" = "true" ]; then
+    echo "View-only mode is enabled. Skipping restore."
+    read -rp "Press Enter to unmount and exit..."
+    fusermount -u "$mount_point"  # Unmount the backup
+    exit 0
+  fi
+  echo "Restoring fivemenhanced"
+  if [ -f $app_dir/docker-compose.yml ]; then
+    (cd $app_dir && docker compose down)
+  else
+    systemctl stop fivemenhancedserver
+  fi
+  rsync --archive --verbose --delete --acls --progress "$mount_point/txData-fivem-enhanced/" /txData-fivem-enhanced/
+  chmod -R 777 /txData-fivem-enhanced/
+  if [ -f $app_dir/docker-compose.yml ]; then
+    (cd $app_dir && docker compose up -d)
+  else
+    systemctl start fivemenhancedserver
+  fi
+  fusermount -u "$mount_point"  # run if -f was not used during mount
+}
+
 restore-redm() {
   local repo=~/server/backup/redm
   local mount_point=~/server/backup/redm-mount
@@ -119,9 +146,10 @@ restore-redm() {
 echo "Select an option:"
 echo "1) Restore fivem-db"
 echo "2) Restore fivem"
-echo "3) Restore redm"
-echo "4) Restore all (fivem-db, fivem, redm)"
-echo "5) Exit"
+echo "3) Restore fivemenhanced"
+echo "4) Restore redm"
+echo "5) Restore all (fivem-db, fivem, fivemenhanced, redm)"
+echo "6) Exit"
 read -rp "Enter your choice: " choice
 
 case $choice in
@@ -132,14 +160,18 @@ case $choice in
     [ -d ~/server/fivem ] && restore-fivem
     ;;
   3)
-    [ -d ~/server/redm ] && restore-redm
+    [ -d ~/server/fivemenhanced ] && restore-fivemenhanced
     ;;
   4)
-    [ -d ~/server/docker/phpmyadmin ] && restore-db
-    [ -d ~/server/fivem ] && restore-fivem
     [ -d ~/server/redm ] && restore-redm
     ;;
   5)
+    [ -d ~/server/docker/phpmyadmin ] && restore-db
+    [ -d ~/server/fivem ] && restore-fivem
+    [ -d ~/server/fivemenhanced ] && restore-fivemenhanced
+    [ -d ~/server/redm ] && restore-redm
+    ;;
+  6)
     echo "Exiting."
     exit 0
     ;;

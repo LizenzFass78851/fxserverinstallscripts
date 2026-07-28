@@ -71,6 +71,75 @@ systemctl enable --now fivembackup.service fivembackup.timer
 echo "systemctl status fivembackup.service fivembackup.timer" can be used to query the status of the service
 }
 
+install_fivemenhanced_backup_solution() {
+# Create backup directories
+mkdir -p ~/server/backup/{fivemenhanced,fivemenhanced-mount}
+cd ~/server/backup
+
+# Download README
+if [ ! -f README.md ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/README.md
+fi
+
+# Download FASTRESTORE.sh
+if [ ! -f FASTRESTORE.sh ]; then
+    wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/FASTRESTORE.sh
+    chmod +x FASTRESTORE.sh
+fi
+
+# Install required packages
+apt update && apt install -y borgbackup python3-pyfuse3 rsync
+
+# Initialize borg repositories
+borg init --encryption none -v ~/server/backup/fivemenhanced
+
+# Download and set permissions for backup scripts
+wget -q https://github.com/LizenzFass78851/fxserverinstallscripts/raw/main/_files/backup-solution/fivemenhanced-backup.sh
+chmod +x fivemenhanced-backup.sh
+
+# Create systemd service files for backups
+cat <<EOF >/etc/systemd/system/fivemenhancedbackup.service
+[Unit]
+# Section described in the article systemd/Units
+Description=FiveM Enhanced Backup
+
+[Service]
+Type=oneshot
+ExecStart=$(echo ~)/server/backup/fivemenhanced-backup.sh
+User=$(whoami)
+Group=$(whoami)
+WorkingDirectory=$(echo ~)/server/backup
+
+[Install]
+# Section described in the article systemd/Units
+WantedBy=multi-user.target
+EOF
+
+cat <<EOF >/etc/systemd/system/fivemenhancedbackup.timer
+[Unit]
+Description=Run FiveM Enhanced Backup
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+#OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* 06:00:00
+#OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 12:00:00
+#OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 18:00:00
+#OnCalendar=*-*-* 21:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start the services
+systemctl enable --now fivemenhancedbackup.service fivemenhancedbackup.timer
+
+echo "systemctl status fivemenhancedbackup.service fivemenhancedbackup.timer" can be used to query the status of the service
+}
+
 install_fivem-db_backup_solution() {
 # Create backup directories
 mkdir -p ~/server/backup/{fivem-db,fivem-db-mount}
@@ -217,6 +286,12 @@ if [ -d ~/server/fivem ]; then
     install_fivem_backup_solution
 else
     echo "FiveM server directory not found. Skipping FiveM backup-solution installation."
+fi
+
+if [ -d ~/server/fivemenhanced ]; then
+    install_fivemenhanced_backup_solution
+else
+    echo "FiveM Enhanced server directory not found. Skipping FiveM Enhanced backup-solution installation."
 fi
 
 if [ -d ~/server/docker/phpmyadmin ]; then

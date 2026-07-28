@@ -8,6 +8,7 @@ GITFOLDERBRANCH=main
 GITREPOLINK=https://github.com/LizenzFass78851/fxserverinstallscripts
 BACKUPSOLUTION=1 # 0 = no backup, 1 = backup
 FIVEM=1 # 0 = no fivem, 1 = fivem
+FIVEMENHANCED=0 # 0 = no enhanced fivem, 1 = enhanced fivem
 REDM=0 # 0 = no redm, 1 = redm
 
 apt update && \
@@ -22,6 +23,7 @@ SCRIPTS=$(find $PWD/ \
   | grep "/scripts/" \
   | grep -v "/100-" \
   | { [ $FIVEM -eq 0 ] && grep -v "install-fivemsrv.sh" || cat; } \
+  | { [ $FIVEMENHANCED -eq 0 ] && grep -v "install-fivemenhancedsrv.sh" || cat; } \
   | { [ $REDM -eq 0 ] && grep -v "install-redmsrv.sh" || cat; } \
   | { [ $BACKUPSOLUTION -eq 0 ] && grep -v "backup-solution.sh" || cat; } \
   | grep -v "/without-docker-compose" \
