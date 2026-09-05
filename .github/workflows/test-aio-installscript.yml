@@ -37,10 +37,15 @@ on:
         default: "_all"
         type: string
 
-
 concurrency:
-  group: ${{ (github.event_name == 'pull_request') && github.workflow && '-' && github.event.pull_request.number || github.workflow }}
-  cancel-in-progress: ${{ (github.event_name == 'pull_request') && true || false }}
+  group: >-
+    ${{ format(
+      '{0}-{1}{2}',
+      github.workflow,
+      github.event_name != 'pull_request' && github.ref_name || 'pull-request',
+      github.event.pull_request.number && format('-{0}', github.event.pull_request.number) || ''
+    ) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && true || false }}
 
 jobs:
   prepare_matrix:
