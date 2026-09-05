@@ -43,46 +43,48 @@ concurrency:
   cancel-in-progress: ${{ (github.event_name == 'pull_request') && true || false }}
 
 jobs:
-  generate-matrix:
+  prepare_matrix:
     runs-on: ubuntu-slim
-    outputs:
-      os: ${{ steps.parse.outputs.os }}
     steps:
-      - name: list
-        id: list
+      - name: output matrix
+        id: matrix
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.os }}" != "_all" ]; then \
-            OSLIST="
-            ${{ github.event.inputs.os }}
-            "
-          else
-            OSLIST="
-            22.04
-            24.04
-            26.04
-            "
-          fi
-          echo "oslist<<EOF" >> $GITHUB_OUTPUT
-          echo "$OSLIST" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          
+          oslist="
+          ${{ github.event.inputs.os }}
+          "
 
-      - name: parse
-        id: parse
-        run: |
-          OSLIST="${{ steps.list.outputs.oslist }}"
-          OSLIST_JSON=$(echo "$OSLIST" | awk 'NF {printf "\"%s\",", $0}' | sed 's/,$//')
-          echo "os=[$OSLIST_JSON]" >> $GITHUB_OUTPUT
-          echo "################################################################"
-          echo "OSLIST_JSON=[$OSLIST_JSON]"
+          else
+
+          oslist="
+          22.04
+          24.04
+          26.04
+          "
+
+          fi
+
+          # OSLIST JSON
+          OSLIST_JSON=$(echo "$oslist" | awk -F';' 'NF {
+              printf "%s{\"os\":\"%s\"}", sep, $1
+              sep=","
+          }')
+          OSLIST_JSON="[$OSLIST_JSON]"
+
+          echo "$OSLIST_JSON" | jq . && (echo "oslist=$OSLIST_JSON" >> $GITHUB_OUTPUT) || exit 1
+
+    outputs:
+      oslist: ${{ steps.matrix.outputs.oslist }}
 
   test-vm:
     runs-on: ubuntu-latest
     if: ${{ !cancelled() && github.event.inputs.run-vm != 'no' }}
-    needs: [ generate-matrix ]
+    needs: [ prepare_matrix ]
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: ${{ fromJson(needs.generate-matrix.outputs.os) }}
+        ubuntu: ${{fromJSON(needs.prepare_matrix.outputs.oslist)}}
     env:
       VAGRANT_DEFAULT_PROVIDER: virtualbox
     steps:
@@ -132,7 +134,7 @@ jobs:
         run: |
           cat <<'EOF' > Vagrantfile
           Vagrant.configure("2") do |config|
-            config.vm.box = "${{ env.VAGRANT_CLOUDIMG_PROVIDER }}/ubuntu-${{ matrix.ubuntu }}"
+            config.vm.box = "${{ env.VAGRANT_CLOUDIMG_PROVIDER }}/ubuntu-${{ matrix.ubuntu.os }}"
             host_cpus = begin
               require 'etc'
               [Etc.nprocessors - 1, 2].max
@@ -155,9 +157,9 @@ jobs:
         with:
           path: |
             ~/.vagrant.d/boxes
-          key: ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-${{ github.run_id }}
+          key: ${{ github.job }}-${{ matrix.ubuntu.os }}-vagrant-${{ github.run_id }}
           restore-keys: |
-            ${{ github.job }}-${{ matrix.ubuntu }}-vagrant-
+            ${{ github.job }}-${{ matrix.ubuntu.os }}-vagrant-
 
       - name: update
         run: |
@@ -185,7 +187,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ github.job }}-${{ matrix.ubuntu }}-logs
+          name: ${{ github.job }}-${{ matrix.ubuntu.os }}-logs
           path: log_vm-*.log
 
       - name: destroy
@@ -196,11 +198,11 @@ jobs:
   test-lxc:
     runs-on: ubuntu-latest
     if: ${{ !cancelled() && github.event.inputs.run-lxc != 'no' }}
-    needs: [ generate-matrix ]
+    needs: [ prepare_matrix ]
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: ${{ fromJson(needs.generate-matrix.outputs.os) }}
+        ubuntu: ${{fromJSON(needs.prepare_matrix.outputs.oslist)}}
     steps:
 
       - *sleep
@@ -224,7 +226,7 @@ jobs:
 
       - name: create
         run: |
-          sudo lxc init ubuntu:${{ matrix.ubuntu }} fxserver-test
+          sudo lxc init ubuntu:${{ matrix.ubuntu.os }} fxserver-test
           sudo lxc network attach lxdbr0 fxserver-test eth0
 
       - name: start
@@ -251,7 +253,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ github.job }}-${{ matrix.ubuntu }}-logs
+          name: ${{ github.job }}-${{ matrix.ubuntu.os }}-logs
           path: log_lxc-*.log
 
       - name: destroy
