@@ -5,12 +5,15 @@ set -e # Exit the script on error
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
 
 # experimental code to download the version from fivem docs
+## latest version
 DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://downloads\.cfx-services\.net/prod/[^"]+/cfx-server_linux_x64\.tar\.xz' | head -n1)"
 
 # script
 INSTALL_DIR=~/server/fivemenhanced
 TXDATA_DIR=/txData-fivemenhanced
 SERVICE_FILE=/etc/systemd/system/fivemenhancedserver.service
+
+[ -z "$DL_URL" ] && { echo "Failed to retrieve download URL. Please check the URL in script or your internet connection."; exit 1; }
 
 mkdir -p ${INSTALL_DIR}
 cd ${INSTALL_DIR}

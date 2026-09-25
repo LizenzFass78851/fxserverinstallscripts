@@ -17,9 +17,13 @@ echo "Changing directory to ${SERVER_DIR}"
 cd ${SERVER_DIR}
 
 # experimental code to download the version from fivem docs
+## latest version
 DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://downloads\.cfx-services\.net/prod/[^"]+/cfx-server_linux_x64\.tar\.xz' | head -n1)"
 
+[ -z "$DL_URL" ] && { echo "Failed to retrieve download URL. Please check the URL in script or your internet connection."; exit 1; }
+
 build=$(echo "${DL_URL}" | grep -oE '[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}')
+[ -z "$build" ] && { echo "Failed to extract build version from download URL."; exit 1; }
 
 if [ -f ./${COMPARE_FILE} ]; then
      last_version=$(cat ./${COMPARE_FILE})

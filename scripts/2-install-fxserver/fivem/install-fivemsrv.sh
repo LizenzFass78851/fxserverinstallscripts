@@ -2,18 +2,20 @@
 
 set -e # Exit the script on error
 
-SRV_ADR="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
+SRV_ADR="https://changelogs-live.fivem.net/api/changelog/versions/linux/server/"
 
-# for recommended versions
-#DL_URL=${SRV_ADR}"$(wget -q -O - ${SRV_ADR} | grep -B 1 'LATEST RECOMMENDED' | tail -n -2 | head -n -1 | cut -d '"' -f 2 | cut -c 2-)"
-
-# for newer versions (experimental code to download the newer versions)
-DL_URL="${SRV_ADR}$(wget -qO- "$SRV_ADR" | grep -oE 'href="\./[0-9]+-[^/]+/fx\.tar\.xz"' | sed -E 's#href="\./([^"]+)".*#\1#' | sort -t- -k1,1n | tail -n1)"
+# code to download the version from fivem api
+## latest version
+DL_URL="$(wget -qO- "$SRV_ADR" | jq -r '.latest_download' | head -n1)"
+## recommended version
+#DL_URL="$(wget -qO- "$SRV_ADR" | jq -r '.recommended_download' | head -n1)"
 
 # script
 INSTALL_DIR=~/server/fivem
 TXDATA_DIR=/txData
 SERVICE_FILE=/etc/systemd/system/fivemserver.service
+
+[ -z "$DL_URL" ] && { echo "Failed to retrieve download URL. Please check the URL in script or your internet connection."; exit 1; }
 
 mkdir -p ${INSTALL_DIR}
 cd ${INSTALL_DIR}

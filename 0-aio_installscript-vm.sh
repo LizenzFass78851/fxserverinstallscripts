@@ -12,7 +12,7 @@ FIVEMENHANCED=0 # 0 = no enhanced fivem, 1 = enhanced fivem
 REDM=0 # 0 = no redm, 1 = redm
 
 apt update && \
-  apt install -yy git curl wget
+  apt install -yy git curl wget jq
 
 cd /tmp
 git clone $GITREPOLINK $GITFOLDERNAME --branch $GITFOLDERBRANCH --depth=1 --single-branch
