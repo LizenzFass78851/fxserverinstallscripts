@@ -11,7 +11,7 @@ services:
     depends_on:
       - mariadb
   mariadb:
-    image: mariadb:12.3
+    image: mariadb:13.0
     container_name: mariadb
     volumes:
       - './db:/var/lib/mysql:Z'
