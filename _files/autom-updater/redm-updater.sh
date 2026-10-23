@@ -2,7 +2,7 @@
 
 set -e # Exit the script on error
 
-SRV_ADR="https://changelogs-live.fivem.net/api/changelog/versions/linux/server/"
+SRV_ADR="https://docs.fivem.net/docs/server-download/"
 SERVER_DIR=~/server/redm
 DOWNLOAD_FILE=fx.tar.xz
 COMPARE_FILE=.compare-buildversion.txt
@@ -16,13 +16,10 @@ exiting() {
 echo "Changing directory to ${SERVER_DIR}"
 cd ${SERVER_DIR}
 
-# code to download the version from fivem api
-## latest version
-DL_URL="$(wget -qO- "$SRV_ADR" | jq -r '.latest_download' | head -n1)"
-## recommended version
-#DL_URL="$(wget -qO- "$SRV_ADR" | jq -r '.recommended_download' | head -n1)"
+# Download the latest version from the FiveM server download page
+DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://runtime\.fivem\.net/artifacts/fivem/build_proot_linux/master/[0-9]+-[0-9a-f]{40}/fx\.tar\.xz' | sed -E 's#^.*/master/([0-9]+)-#\1 &#' | sort -nr | cut -d' ' -f2- | head -n1)"
 ## tagged version
-#DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/9956-41b2e627e3b80ddbba4d63cb74968ac3d5926eb6/fx.tar.xz
+#DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/37692-ccd92212b96d4633897450940a57dc61dc2bc5b2/fx.tar.xz
 
 [ -z "$DL_URL" ] && { echo "Failed to retrieve download URL. Please check the URL in script or your internet connection."; exit 1; }
 

@@ -16,9 +16,10 @@ exiting() {
 echo "Changing directory to ${SERVER_DIR}"
 cd ${SERVER_DIR}
 
-# experimental code to download the version from fivem docs
-## latest version
+# Download the latest version from the FiveM server download page
 DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://downloads\.cfx-services\.net/prod/[^"]+/cfx-server_linux_x64\.tar\.xz' | head -n1)"
+## tagged version
+#DL_URL=https://downloads.cfx-services.net/prod/01a13a8b-a2b6-748d-8109-1b661cae66ea/cfx-server_linux_x64.tar.xz
 
 [ -z "$DL_URL" ] && { echo "Failed to retrieve download URL. Please check the URL in script or your internet connection."; exit 1; }
 

@@ -4,8 +4,7 @@ set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
 
-# experimental code to download the version from fivem docs
-## latest version
+# Download the latest version from the FiveM server download page
 DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://downloads\.cfx-services\.net/prod/[^"]+/cfx-server_linux_x64\.tar\.xz' | head -n1)"
 
 # script
