@@ -3,6 +3,9 @@
 set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
+BUILD_ID="$(wget -qO- "$SRV_ADR" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4)"
+JSON_URL="https://docs.fivem.net/_next/data/${BUILD_ID}/docs/server-download.json"
+
 SERVER_DIR=~/server/fivem
 DOWNLOAD_FILE=fx.tar.xz
 COMPARE_FILE=.compare-buildversion.txt
@@ -17,7 +20,7 @@ echo "Changing directory to ${SERVER_DIR}"
 cd ${SERVER_DIR}
 
 # Download the latest version from the FiveM server download page
-DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://runtime\.fivem\.net/artifacts/fivem/build_proot_linux/master/[0-9]+-[0-9a-f]{40}/fx\.tar\.xz' | sed -E 's#^.*/master/([0-9]+)-#\1 &#' | sort -nr | cut -d' ' -f2- | head -n1)"
+DL_URL="$(wget -qO- "$JSON_URL" | jq -er '.pageProps.legacy.latest.linux[0].downloadURL')"
 ## tagged version
 #DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/37692-ccd92212b96d4633897450940a57dc61dc2bc5b2/fx.tar.xz
 

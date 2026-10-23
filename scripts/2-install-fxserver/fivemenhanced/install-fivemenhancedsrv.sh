@@ -3,9 +3,11 @@
 set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
+BUILD_ID="$(wget -qO- "$SRV_ADR" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4)"
+JSON_URL="https://docs.fivem.net/_next/data/${BUILD_ID}/docs/server-download.json"
 
 # Download the latest version from the FiveM server download page
-DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://downloads\.cfx-services\.net/prod/[^"]+/cfx-server_linux_x64\.tar\.xz' | head -n1)"
+DL_URL="$(wget -qO- "$JSON_URL" | jq -er '.pageProps.enhanced.linux[0].downloadURL')"
 
 # script
 INSTALL_DIR=~/server/fivemenhanced

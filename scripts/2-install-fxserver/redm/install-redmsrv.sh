@@ -3,9 +3,11 @@
 set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
+BUILD_ID="$(wget -qO- "$SRV_ADR" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4)"
+JSON_URL="https://docs.fivem.net/_next/data/${BUILD_ID}/docs/server-download.json"
 
 # Download the latest version from the FiveM server download page
-DL_URL="$(wget -qO- "$SRV_ADR" | grep -oE 'https://runtime\.fivem\.net/artifacts/fivem/build_proot_linux/master/[0-9]+-[0-9a-f]{40}/fx\.tar\.xz' | sed -E 's#^.*/master/([0-9]+)-#\1 &#' | sort -nr | cut -d' ' -f2- | head -n1)"
+DL_URL="$(wget -qO- "$JSON_URL" | jq -er '.pageProps.legacy.latest.linux[0].downloadURL')"
 
 # script
 INSTALL_DIR=~/server/redm
