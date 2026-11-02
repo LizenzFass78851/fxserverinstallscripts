@@ -3,7 +3,12 @@
 set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
-BUILD_ID="$(wget -qO- "$SRV_ADR" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4)"
+PAGE_HTML="$(wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused -O- "$SRV_ADR")"
+BUILD_ID="$(printf '%s' "$PAGE_HTML" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4 || true)"
+if [ -z "$BUILD_ID" ]; then
+     echo "Failed to extract build ID from $SRV_ADR."
+     exit 1
+fi
 JSON_URL="https://docs.fivem.net/_next/data/${BUILD_ID}/docs/server-download.json"
 
 SERVER_DIR=~/server/fivem
@@ -20,7 +25,7 @@ echo "Changing directory to ${SERVER_DIR}"
 cd ${SERVER_DIR}
 
 # Download the latest version from the FiveM server download page
-DL_URL="$(wget -qO- "$JSON_URL" | jq -er '.pageProps.legacy.latest.linux[0].downloadURL')"
+DL_URL="$(wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused -O- "$JSON_URL" | jq -er '.pageProps.legacy.latest.linux[0].downloadURL')"
 ## tagged version
 #DL_URL=https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/37692-ccd92212b96d4633897450940a57dc61dc2bc5b2/fx.tar.xz
 

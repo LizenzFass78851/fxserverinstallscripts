@@ -3,7 +3,12 @@
 set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
-BUILD_ID="$(wget -qO- "$SRV_ADR" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4)"
+PAGE_HTML="$(wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused -O- "$SRV_ADR")"
+BUILD_ID="$(printf '%s' "$PAGE_HTML" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4 || true)"
+if [ -z "$BUILD_ID" ]; then
+     echo "Failed to extract build ID from $SRV_ADR."
+     exit 1
+fi
 JSON_URL="https://docs.fivem.net/_next/data/${BUILD_ID}/docs/server-download.json"
 
 SERVER_DIR=~/server/fivemenhanced
@@ -20,7 +25,7 @@ echo "Changing directory to ${SERVER_DIR}"
 cd ${SERVER_DIR}
 
 # Download the latest version from the FiveM server download page
-DL_URL="$(wget -qO- "$JSON_URL" | jq -er '.pageProps.enhanced.linux[0].downloadURL')"
+DL_URL="$(wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused -O- "$JSON_URL" | jq -er '.pageProps.enhanced.linux[0].downloadURL')"
 ## tagged version
 #DL_URL=https://downloads.cfx-services.net/prod/01a13a8b-a2b6-748d-8109-1b661cae66ea/cfx-server_linux_x64.tar.xz
 

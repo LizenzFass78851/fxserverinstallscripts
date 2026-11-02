@@ -3,11 +3,16 @@
 set -e # Exit the script on error
 
 SRV_ADR="https://docs.fivem.net/docs/server-download/"
-BUILD_ID="$(wget -qO- "$SRV_ADR" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4)"
+PAGE_HTML="$(wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused -O- "$SRV_ADR")"
+BUILD_ID="$(printf '%s' "$PAGE_HTML" | grep -oE '"buildId":"[^"]+"' | head -n1 | cut -d'"' -f4 || true)"
+if [ -z "$BUILD_ID" ]; then
+  echo "Failed to extract build ID from $SRV_ADR."
+  exit 1
+fi
 JSON_URL="https://docs.fivem.net/_next/data/${BUILD_ID}/docs/server-download.json"
 
 # Download the latest version from the FiveM server download page
-DL_URL="$(wget -qO- "$JSON_URL" | jq -er '.pageProps.legacy.latest.linux[0].downloadURL')"
+DL_URL="$(wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused -O- "$JSON_URL" | jq -er '.pageProps.legacy.latest.linux[0].downloadURL')"
 
 # script
 INSTALL_DIR=~/server/redm
@@ -19,7 +24,7 @@ SERVICE_FILE=/etc/systemd/system/redmserver.service
 mkdir -p ${INSTALL_DIR}
 cd ${INSTALL_DIR}
 
-wget ${DL_URL} -O fx.tar.xz
+wget --no-verbose --tries=6 --timeout=60 --connect-timeout=15 --waitretry=2 --retry-connrefused "$DL_URL" -O fx.tar.xz
 
 tar -xvf fx.tar.xz && rm fx.tar.xz
 
